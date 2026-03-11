@@ -1,0 +1,58 @@
+@model IEnumerable<BDTechMarket.Models.Order>
+@{
+    ViewData["Title"] = "Manage Orders";
+}
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold"><i class="fas fa-clipboard-list me-2 text-primary"></i>Manage Orders</h2>
+        <span class="badge bg-dark px-3 py-2">Total Orders: @Model.Count()</span>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4">Order ID</th>
+                        <th>Customer</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th class="text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-4 fw-bold">#@item.Id</td>
+                            <td>
+                                <div class="fw-bold">@item.FullName</div>
+                                <small class="text-muted">@item.OrderDate.ToString("dd MMM yyyy")</small>
+                            </td>
+                            <td class="fw-bold text-primary">৳@item.OrderTotal.ToString("N0")</td>
+                            <td>
+                                <span class="badge rounded-pill @(item.OrderStatus == "Delivered" ? "bg-success" : "bg-warning text-dark")">
+                                    @item.OrderStatus
+                                </span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <form asp-action="UpdateOrderStatus" method="post" class="d-inline">
+                                    <input type="hidden" name="orderId" value="@item.Id" />
+                                    <select name="newStatus" onchange="this.form.submit()" class="form-select form-select-sm d-inline-block w-auto rounded-pill">
+                                        <option value="">Update Status</option>
+                                        <option value="Approved">Approved</option>
+                                        <option value="Processing">Processing</option>
+                                        <option value="Shipped">Shipped</option>
+                                        <option value="Delivered">Delivered</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                    </select>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

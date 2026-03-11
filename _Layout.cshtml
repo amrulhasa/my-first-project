@@ -1,0 +1,228 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BDTechMarket</title>
+    
+    @* --- Resources --- *@
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <style>
+        :root {
+            --brand-dark: #1a1a1a;
+            --brand-gold: #ffc107;
+            --brand-success: #198754;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- Modern Navbar --- */
+        .navbar {
+            background-color: var(--brand-dark) !important;
+            border-bottom: 3px solid var(--brand-gold);
+            padding: 0.7rem 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-brand { font-size: 1.6rem; letter-spacing: -0.5px; }
+        
+        .nav-link { 
+            font-size: 0.95rem;
+            transition: all 0.2s ease; 
+        }
+        .nav-link:hover { color: var(--brand-gold) !important; transform: translateY(-1px); }
+
+        .cart-badge {
+            font-size: 0.65rem;
+            vertical-align: top;
+            margin-left: -5px;
+        }
+
+        /* --- Content Area --- */
+        .container-main { flex: 1; }
+
+        /* --- Footer --- */
+        .footer-dark {
+            background: linear-gradient(180deg, #1a1a1a 0%, #000000 100%);
+            color: #ffffff;
+            padding: 60px 0 20px;
+            margin-top: 80px;
+        }
+        
+        .social-icons a {
+            color: white;
+            margin-right: 15px;
+            font-size: 1.2rem;
+            transition: 0.3s;
+        }
+        .social-icons a:hover { color: var(--brand-gold); }
+
+        /* --- Buttons --- */
+        .btn-auth {
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark shadow-lg sticky-top">
+            <div class="container">
+                <a class="navbar-brand fw-bold text-warning" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-bolt me-2 animate__animated animate__pulse animate__infinite"></i>BDTechMarket
+                </a>
+                
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarMain">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link text-white px-3" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white px-3" asp-controller="Home" asp-action="Products">Products</a>
+                        </li>
+                    </ul>
+
+                    <ul class="navbar-nav align-items-center">
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            @if (!User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item me-3">
+                                    <a class="nav-link text-white position-relative" asp-controller="Cart" asp-action="Index">
+                                        <i class="fas fa-shopping-basket fs-5"></i>
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge">
+                                            0 @* You can bind this to a ViewBag.CartCount later *@
+                                        </span>
+                                    </a>
+                                </li>
+                            }
+                            
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item me-2">
+                                    <a class="btn btn-outline-warning btn-auth me-2" asp-controller="Admin" asp-action="Index">
+                                        <i class="fas fa-user-shield me-1"></i> Admin
+                                    </a>
+                                </li>
+                            }
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-light" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-user-circle me-1 text-warning"></i> @User.Identity.Name
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><a class="dropdown-item" asp-controller="Order" asp-action="MyOrders"><i class="fas fa-list me-2"></i>My Orders</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form asp-controller="Account" asp-action="Logout" method="post" class="px-3">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-danger w-100 rounded-pill">Logout</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="btn btn-outline-light btn-auth me-2" asp-controller="Account" asp-action="Login">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-warning btn-auth text-dark" asp-controller="Account" asp-action="Register">Join Free</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container container-main mt-4">
+        @* --- Flash Messages --- *@
+        @if (TempData["success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm animate__animated animate__fadeInDown" role="alert">
+                <i class="fas fa-check-circle me-2"></i> @TempData["success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <main role="main" class="pb-5">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="footer-dark">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="text-warning fw-bold mb-3">BDTechMarket</h5>
+                    <p class="small text-muted mb-4">Bangladesh's most trusted gadget marketplace. Delivering innovation to your doorstep since 2024.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="text-white fw-bold mb-3">Quick Links</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a asp-controller="Home" asp-action="Products" class="footer-link">Latest Gadgets</a></li>
+                        <li class="mb-2"><a href="#" class="footer-link">Privacy Policy</a></li>
+                        <li class="mb-2"><a href="#" class="footer-link">Refund Policy</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="text-white fw-bold mb-3">Support</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a href="#" class="footer-link">Order Tracking</a></li>
+                        <li class="mb-2"><a href="#" class="footer-link">Shipping Info</a></li>
+                        <li class="mb-2"><a href="#" class="footer-link">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="text-white fw-bold mb-3">Newsletter</h6>
+                    <p class="x-small text-muted">Get updates on new stock and sales.</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control form-control-sm bg-dark border-secondary text-white" placeholder="Email address">
+                        <button class="btn btn-warning btn-sm" type="button">Go</button>
+                    </div>
+                </div>
+            </div>
+            <hr class="border-secondary my-4" />
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="text-muted small mb-0">&copy; @DateTime.Now.Year - BDTechMarket. Built with <i class="fas fa-heart text-danger"></i> in Bangladesh.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end mt-2 mt-md-0">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" height="20" class="me-3 opacity-50" alt="payment">
+                    <i class="fab fa-cc-visa fa-2x me-3 opacity-50"></i>
+                    <i class="fab fa-cc-mastercard fa-2x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

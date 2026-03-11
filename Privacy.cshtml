@@ -1,0 +1,81 @@
+﻿@{
+    ViewData["Title"] = "Privacy Policy";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            @* Header Section *@
+            <div class="text-center mb-5">
+                <i class="fas fa-user-shield fa-4x text-primary mb-3"></i>
+                <h1 class="fw-bold">@ViewData["Title"]</h1>
+                <p class="text-muted">Last Updated: @DateTime.Now.ToString("MMMM dd, yyyy")</p>
+                <hr class="w-25 mx-auto border-primary border-2">
+            </div>
+
+            @* Policy Content *@
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
+                
+                <section class="mb-5">
+                    <h4 class="fw-bold text-dark"><i class="fas fa-info-circle me-2 text-primary"></i>1. Information We Collect</h4>
+                    <p class="text-secondary">To provide you with the best gadgets and service, we collect the following information:</p>
+                    <ul class="text-secondary">
+                        <li><strong>Personal Identity:</strong> Name, Username, and Email address provided during registration.</li>
+                        <li><strong>Transaction Data:</strong> Shipping address, phone number, and order history.</li>
+                        <li><strong>Technical Data:</strong> IP address and cookies to improve your browsing experience on BDTechMarket.</li>
+                    </ul>
+                </section>
+
+                <section class="mb-5">
+                    <h4 class="fw-bold text-dark"><i class="fas fa-handshake me-2 text-primary"></i>2. How We Use Your Data</h4>
+                    <p class="text-secondary">Your data is used strictly for business operations, including:</p>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded-3 bg-light h-100">
+                                <h6 class="fw-bold mb-1">Order Fulfillment</h6>
+                                <small class="text-muted">Processing your purchases and delivering tech gadgets to your doorstep.</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded-3 bg-light h-100">
+                                <h6 class="fw-bold mb-1">Account Safety</h6>
+                                <small class="text-muted">Verifying your identity and securing your account against unauthorized access.</small>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="mb-5">
+                    <h4 class="fw-bold text-dark"><i class="fas fa-lock me-2 text-primary"></i>3. Data Security</h4>
+                    <p class="text-secondary">
+                        At <strong>BDTechMarket</strong>, we implement industry-standard encryption (SSL) to protect your personal data during transmission. We do not store your full credit card or mobile banking PINs on our servers; payments are processed through secured third-party gateways.
+                    </p>
+                </section>
+
+                <section class="mb-5">
+                    <h4 class="fw-bold text-dark"><i class="fas fa-user-check me-2 text-primary"></i>4. Your Rights</h4>
+                    <p class="text-secondary">You have the right to access, correct, or delete your personal information at any time through your Profile Dashboard. If you wish to permanently delete your account, please contact our support team.</p>
+                </section>
+
+                <div class="alert alert-warning border-0 rounded-3 d-flex align-items-center mb-0">
+                    <i class="fas fa-exclamation-triangle me-3 fa-2x"></i>
+                    <div>
+                        <h6 class="fw-bold mb-0">Changes to this Policy</h6>
+                        <small>We may update this policy occasionally to reflect changes in our practices. We will notify you of any significant changes via email.</small>
+                    </div>
+                </div>
+            </div>
+
+            @* Contact Support Link *@
+            <div class="text-center mt-5">
+                <p class="text-muted small">Have questions about your privacy? <a href="mailto:privacy@bdtechmarket.com" class="text-primary text-decoration-none fw-bold">Contact our Privacy Team</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body { background-color: #f8f9fa; }
+    h4 { margin-top: 1.5rem; }
+    section p, section li { line-height: 1.7; }
+</style>

@@ -1,0 +1,101 @@
+@using BDTechMarket.Models.ViewModels
+@model IEnumerable<SalesSummaryVM>
+
+@{
+    ViewData["Title"] = "Sales Summary Report";
+}
+
+<div class="container mt-4 mb-5">
+    @* Analytics Header *@
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-dark"><i class="fas fa-chart-bar text-primary me-2"></i> Sales Analytics</h2>
+            <p class="text-muted small">Real-time performance review of BDTechMarket gadgets.</p>
+        </div>
+        <button onclick="window.print()" class="btn btn-outline-dark rounded-pill shadow-sm d-print-none">
+            <i class="fas fa-print me-2"></i> Export Report
+        </button>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-9">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light text-muted small text-uppercase font-monospace">
+                            <tr>
+                                <th class="ps-4 py-3">Product Name</th>
+                                <th class="text-center">Units Sold</th>
+                                <th class="text-end pe-4">Total Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td class="ps-4 fw-bold text-dark">@item.ProductName</td>
+                                        <td class="text-center">
+                                            <span class="badge bg-primary-subtle text-primary rounded-pill px-3">
+                                                @item.TotalSold Units
+                                            </span>
+                                        </td>
+                                        <td class="text-end pe-4 fw-bold">@item.TotalRevenue.ToString("N0") ৳</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-center py-5 text-muted">
+                                        <i class="fas fa-database fa-2x mb-3 opacity-25"></i><br>No sales data available yet.
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            <tfoot class="table-light fw-bold">
+                                <tr>
+                                    <td class="ps-4">Inventory Grand Total</td>
+                                    <td class="text-center">@Model.Sum(x => x.TotalSold)</td>
+                                    <td class="text-end pe-4 text-success">@Model.Sum(x => x.TotalRevenue).ToString("N0") ৳</td>
+                                </tr>
+                            </tfoot>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        @* Side Sidebar Widgets *@
+        <div class="col-lg-3 d-print-none">
+            <div class="card border-0 shadow-sm rounded-4 bg-primary text-white p-4 mb-4">
+                <small class="text-uppercase opacity-75 fw-bold">Top Performing Item</small>
+                <h4 class="fw-bold mt-2">
+                    @((Model != null && Model.Any()) ? Model.OrderByDescending(x => x.TotalSold).First().ProductName : "N/A")
+                </h4>
+            </div>
+            
+            <div class="card border-0 shadow-sm rounded-4 bg-dark text-white p-4">
+                <small class="text-uppercase opacity-75 fw-bold">Total Net Revenue</small>
+                <h3 class="fw-bold mt-2">@((Model != null) ? Model.Sum(x => x.TotalRevenue).ToString("N0") : "0") ৳</h3>
+            </div>
+
+            <a asp-action="Index" class="btn btn-outline-primary w-100 mt-4 rounded-pill">
+                <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    body { background-color: #f8f9fa; }
+    .bg-primary-subtle { background-color: rgba(13, 110, 253, 0.1); }
+    @@media print {
+        .d-print-none { display: none !important; }
+        body { background-color: white; }
+        .card { border: 1px solid #dee2e6 !important; shadow: none !important; }
+    }
+</style>

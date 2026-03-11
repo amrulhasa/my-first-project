@@ -1,0 +1,129 @@
+@model IEnumerable<BDTechMarket.Models.Order>
+@{
+    ViewData["Title"] = "Order History";
+}
+
+<div class="container py-5">
+    @* --- Dashboard Stats Section --- *@
+    @if (Model != null && Model.Any())
+    {
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 bg-primary text-white p-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 bg-white bg-opacity-25 rounded-circle p-3 me-3">
+                            <i class="fas fa-shopping-cart fa-lg"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 opacity-75 small">Lifetime Orders</h6>
+                            <h3 class="mb-0 fw-bold">@Model.Count()</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 bg-success text-white p-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 bg-white bg-opacity-25 rounded-circle p-3 me-3">
+                            <i class="fas fa-wallet fa-lg"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 opacity-75 small">Total Spent</h6>
+                            @* FIX: TotalAmount -> OrderTotal *@
+                            <h3 class="mb-0 fw-bold">৳ @Model.Sum(o => o.OrderTotal).ToString("N0")</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 bg-info text-white p-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 bg-white bg-opacity-25 rounded-circle p-3 me-3">
+                            <i class="fas fa-truck fa-lg"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 opacity-75 small">Last Order Date</h6>
+                            <h3 class="mb-0 fw-bold">@Model.OrderByDescending(o => o.OrderDate).First().OrderDate.ToString("dd MMM")</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-header bg-white py-4 px-4 border-bottom">
+                    <h5 class="mb-0 fw-bold text-dark">Recent Transactions</h5>
+                </div>
+
+                <div class="card-body p-0">
+                    @if (Model == null || !Model.Any())
+                    {
+                        <div class="text-center py-5">
+                            <h4 class="fw-bold">No tech found here!</h4>
+                            <p class="text-muted">Your order history is currently empty.</p>
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-primary rounded-pill px-4 fw-bold">Go Shopping</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="bg-light text-muted x-small text-uppercase fw-bold">
+                                    <tr>
+                                        <th class="ps-4 py-3">Order Information</th>
+                                        <th class="py-3">Status</th>
+                                        <th class="py-3">Payment</th>
+                                        <th class="py-3">Total Amount</th>
+                                        <th class="pe-4 py-3 text-end">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.OrderByDescending(o => o.OrderDate))
+                                    {
+                                        <tr>
+                                            <td class="ps-4 py-3">
+                                                <div class="fw-bold text-dark">#ORD-@item.Id.ToString("D5")</div>
+                                                <div class="text-muted small">@item.OrderDate.ToString("MMM dd, yyyy")</div>
+                                            </td>
+                                            <td>
+                                                @* FIX: Status -> OrderStatus *@
+                                                @switch (item.OrderStatus)
+                                                {
+                                                    case "Pending":
+                                                        <span class="badge bg-warning-subtle text-warning border rounded-pill">Pending</span>
+                                                        break;
+                                                    case "Delivered":
+                                                        <span class="badge bg-success-subtle text-success border rounded-pill">Completed</span>
+                                                        break;
+                                                    default:
+                                                        <span class="badge bg-secondary-subtle text-secondary rounded-pill">@item.OrderStatus</span>
+                                                        break;
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="small fw-bold text-dark">@item.PaymentMethod</div>
+                                                <div class="x-small @(item.PaymentStatus == "Completed" ? "text-success" : "text-danger")">
+                                                    ● @item.PaymentStatus
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @* FIX: TotalAmount -> OrderTotal *@
+                                                <span class="fw-bold">৳ @item.OrderTotal.ToString("N0")</span>
+                                            </td>
+                                            <td class="pe-4 text-end">
+                                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-dark rounded-3 px-3">Details</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

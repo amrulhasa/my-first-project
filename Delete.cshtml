@@ -1,0 +1,89 @@
+@model BDTechMarket.Models.Product
+@{
+    ViewData["Title"] = "Confirm Delete";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                
+                @* Warning Header *@
+                <div class="card-header bg-danger text-white text-center py-5">
+                    <div class="animate__animated animate__headShake animate__infinite infinite">
+                        <i class="fas fa-exclamation-triangle fa-4x mb-3"></i>
+                    </div>
+                    <h3 class="fw-bold mb-0">Careful!</h3>
+                    <p class="mb-0 opacity-75">You are about to delete a product</p>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <p class="text-muted">Deletion is <strong>permanent</strong>. Removing <span class="text-dark fw-bold">@Model.Name</span> will hide it from all customers and reports.</p>
+                    </div>
+                    
+                    @* Product Identity Card *@
+                    <div class="p-3 border rounded-3 bg-light mb-4">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                                {
+                                    <img src="@Model.ImageUrl" class="rounded shadow-sm" style="width: 80px; height: 80px; object-fit: cover;" />
+                                }
+                                else
+                                {
+                                    <div class="bg-secondary bg-opacity-25 rounded d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                        <i class="fas fa-box fa-2x text-secondary"></i>
+                                    </div>
+                                }
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1 fw-bold text-dark">@Model.Name</h6>
+                                <div class="small text-muted mb-1">SKU: #PROD-@Model.Id.ToString("D4")</div>
+                                <span class="badge rounded-pill bg-dark">৳ @Model.Price.ToString("N0")</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* Form Section *@
+                    <form asp-action="Delete">
+                        <input type="hidden" asp-for="Id" />
+                        
+                        <div class="d-grid gap-3">
+                            <button type="submit" class="btn btn-danger btn-lg rounded-pill fw-bold shadow-sm hover-lift">
+                                <i class="fas fa-trash-alt me-2"></i>Permanently Delete
+                            </button>
+                            <a asp-action="Index" class="btn btn-link text-muted text-decoration-none fw-bold">
+                                No, I changed my mind
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <p class="text-center mt-4 small text-muted">
+                <i class="fas fa-lock me-1"></i> Admin Authorization Required
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    body { background-color: #f4f7f6; }
+    .rounded-4 { border-radius: 1.25rem !important; }
+    
+    .hover-lift {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(220, 53, 69, 0.3) !important;
+    }
+
+    /* Animation speed adjustment */
+    .animate__headShake {
+        --animate-duration: 3s;
+    }
+</style>

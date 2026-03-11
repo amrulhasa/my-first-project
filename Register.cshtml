@@ -1,0 +1,78 @@
+@model BDTechMarket.Models.ViewModels.RegisterVM
+@{
+    ViewData["Title"] = "Create Account";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                <div class="card-header bg-dark text-white text-center py-4">
+                    <i class="fas fa-user-plus fa-3x mb-2 text-primary"></i>
+                    <h3 class="fw-bold mb-0">Join BDTechMarket</h3>
+                    <p class="small mb-0 text-white-50">Create your account to start shopping</p>
+                </div>
+
+                <div class="card-body p-4 p-lg-5">
+                    <form asp-action="Register" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 small py-2 mb-4 shadow-sm"></div>
+
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label asp-for="Username" class="form-label fw-semibold small">
+                                    <i class="fas fa-at me-1"></i> Username
+                                </label>
+                                <input asp-for="Username" class="form-control border-1 shadow-none" placeholder="Choose a unique username" />
+                                <span asp-validation-for="Username" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12 mb-3">
+                                <label asp-for="Email" class="form-label fw-semibold small">
+                                    <i class="fas fa-envelope me-1"></i> Email Address
+                                </label>
+                                <input asp-for="Email" class="form-control border-1 shadow-none" placeholder="name@example.com" />
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Password" class="form-label fw-semibold small">
+                                    <i class="fas fa-key me-1"></i> Password
+                                </label>
+                                <input asp-for="Password" class="form-control border-1 shadow-none" type="password" placeholder="••••••••" />
+                                <span asp-validation-for="Password" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ConfirmPassword" class="form-label fw-semibold small">
+                                    <i class="fas fa-check-double me-1"></i> Confirm
+                                </label>
+                                <input asp-for="ConfirmPassword" class="form-control border-1 shadow-none" type="password" placeholder="••••••••" />
+                                <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-text text-muted small mb-4">
+                            By clicking Register, you agree to our Terms and Conditions.
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm py-3 transition-btn">
+                                Create My Account
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card-footer text-center py-3 bg-light border-0">
+                    <p class="small mb-0 text-muted">
+                        Already a member? <a asp-action="Login" class="text-primary text-decoration-none fw-bold">Login Here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
