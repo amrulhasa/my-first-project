@@ -1,0 +1,342 @@
+@model BDTechMarket.Models.Order
+
+<div class="container my-5">
+
+    <form asp-controller="Order"
+          asp-action="PlaceOrder"
+          method="post"
+          id="paymentForm">
+
+        @Html.AntiForgeryToken()
+
+        <div class="row">
+
+            <!-- ==============================
+                 LEFT SIDE
+                 ============================== -->
+            <div class="col-md-8">
+
+                <!-- Shipping Information -->
+                <div class="card shadow-sm border-0 mb-4">
+
+                    <div class="card-header bg-primary text-white py-3">
+                        <h5 class="mb-0">
+                            <i class="fas fa-truck me-2"></i>
+                            Shipping & Contact Information
+                        </h5>
+                    </div>
+
+                    <div class="card-body p-4">
+
+                        <div class="row g-3">
+
+                            <!-- Full Name -->
+                            <div class="col-12">
+
+                                <label asp-for="FullName"
+                                       class="form-label fw-bold">
+                                    Recipient Full Name
+                                </label>
+
+                                <input asp-for="FullName"
+                                       class="form-control form-control-lg bg-light"
+                                       placeholder="e.g. Sakib Ahmed"
+                                       autocomplete="name" />
+
+                                <span asp-validation-for="FullName"
+                                      class="text-danger small">
+                                </span>
+
+                            </div>
+
+
+                            <!-- Phone -->
+                            <div class="col-md-6">
+
+                                <label asp-for="Phone"
+                                       class="form-label fw-bold">
+                                    Phone Number
+                                </label>
+
+                                <div class="input-group">
+
+                                    <span class="input-group-text">
+                                        +88
+                                    </span>
+
+                                    <input asp-for="Phone"
+                                           class="form-control form-control-lg bg-light"
+                                           placeholder="017XXXXXXXX"
+                                           inputmode="tel"
+                                           autocomplete="tel" />
+
+                                </div>
+
+                                <span asp-validation-for="Phone"
+                                      class="text-danger small">
+                                </span>
+
+                            </div>
+
+
+                            <!-- Email -->
+                            <div class="col-md-6">
+
+                                <label asp-for="Email"
+                                       class="form-label fw-bold">
+                                    Email Address
+                                </label>
+
+                                <input asp-for="Email"
+                                       class="form-control form-control-lg bg-light"
+                                       placeholder="email@example.com"
+                                       autocomplete="email" />
+
+                                <span asp-validation-for="Email"
+                                      class="text-danger small">
+                                </span>
+
+                            </div>
+
+
+                            <!-- Address -->
+                            <div class="col-12">
+
+                                <label asp-for="Address"
+                                       class="form-label fw-bold">
+                                    Detailed Delivery Address
+                                </label>
+
+                                <textarea asp-for="Address"
+                                          class="form-control bg-light"
+                                          rows="4"
+                                          placeholder="House no, Road, Area, City..."
+                                          autocomplete="street-address"></textarea>
+
+                                <span asp-validation-for="Address"
+                                      class="text-danger small">
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <!-- ==============================
+                     PAYMENT METHOD
+                     ============================== -->
+
+                <div class="card shadow-sm border-0">
+
+                    <div class="card-body p-4">
+
+                        <h6 class="fw-bold mb-3 text-uppercase">
+                            Select Payment Method
+                        </h6>
+
+
+                        <div class="row g-3">
+
+                            <!-- COD -->
+                            <div class="col-12">
+
+                                <input type="radio"
+                                       asp-for="PaymentMethod"
+                                       class="btn-check"
+                                       id="cod"
+                                       value="COD"
+                                       checked />
+
+                                <label class="btn btn-outline-success w-100 p-3 text-start"
+                                       for="cod">
+
+                                    <div class="d-flex align-items-center">
+
+                                        <div class="me-3">
+                                            <i class="fas fa-hand-holding-usd fa-2x"></i>
+                                        </div>
+
+                                        <div>
+                                            <strong class="d-block">
+                                                Cash on Delivery
+                                            </strong>
+
+                                            <small class="text-muted">
+                                                Pay when your order is delivered.
+                                            </small>
+                                        </div>
+
+                                    </div>
+
+                                </label>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Payment Notice -->
+                        <div class="alert alert-info mt-4 mb-0">
+
+                            <i class="fas fa-info-circle me-2"></i>
+
+                            <strong>Payment information:</strong>
+
+                            Currently, Cash on Delivery is available.
+                            Online bKash/Nagad payment will be added after
+                            the payment gateway is properly integrated.
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- ==============================
+                 RIGHT SIDE
+                 ============================== -->
+
+            <div class="col-md-4">
+
+                <div class="card shadow border-0 sticky-top"
+                     style="top: 20px;">
+
+                    <div class="card-body p-4">
+
+                        <h5 class="fw-bold mb-4">
+                            Order Summary
+                        </h5>
+
+
+                        <!-- Subtotal -->
+                        <div class="d-flex justify-content-between mb-2">
+
+                            <span>
+                                Subtotal
+                            </span>
+
+                            <span class="fw-bold">
+                                ৳ @Convert.ToDecimal(ViewBag.Subtotal).ToString("N2")
+                            </span>
+
+                        </div>
+
+
+                        <!-- Delivery -->
+                        <div class="d-flex justify-content-between mb-2">
+
+                            <span>
+                                Delivery Fee
+                            </span>
+
+                            <span class="text-success fw-bold">
+                                ৳ @Convert.ToDecimal(ViewBag.DeliveryFee).ToString("N2")
+                            </span>
+
+                        </div>
+
+
+                        <hr />
+
+
+                        <!-- Grand Total -->
+                        <div class="d-flex justify-content-between mb-4">
+
+                            <span class="h5 fw-bold">
+                                Grand Total
+                            </span>
+
+                            <span class="h5 fw-bold text-primary">
+                                ৳ @Convert.ToDecimal(ViewBag.Total).ToString("N2")
+                            </span>
+
+                        </div>
+
+
+                        <!-- Confirm -->
+                        <button type="submit"
+                                id="confirmOrderBtn"
+                                class="btn btn-primary btn-lg w-100 rounded-pill shadow">
+
+                            <span id="buttonText">
+                                CONFIRM ORDER
+                            </span>
+
+                            <i class="fas fa-arrow-right ms-2"
+                               id="buttonIcon"></i>
+
+                        </button>
+
+
+                        <div class="text-center mt-3">
+
+                            <small class="text-muted">
+
+                                <i class="fas fa-lock me-1"></i>
+
+                                Your order information is securely processed.
+
+                            </small>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const form = document.getElementById("paymentForm");
+            const button = document.getElementById("confirmOrderBtn");
+            const buttonText = document.getElementById("buttonText");
+            const buttonIcon = document.getElementById("buttonIcon");
+
+            if (!form || !button) {
+                return;
+            }
+
+            form.addEventListener("submit", function (event) {
+
+                // Let jQuery validation handle invalid form
+                if (!$(form).valid()) {
+                    return;
+                }
+
+                // Prevent accidental double submission
+                if (button.disabled) {
+                    event.preventDefault();
+                    return;
+                }
+
+                button.disabled = true;
+
+                buttonText.textContent = "PLACING ORDER...";
+
+                buttonIcon.className =
+                    "fas fa-spinner fa-spin ms-2";
+
+            });
+
+        });
+
+    </script>
+}

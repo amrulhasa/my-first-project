@@ -1,0 +1,587 @@
+@model BDTechMarket.Models.Product
+
+@{
+    ViewData["Title"] = "Add Product";
+}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-12 col-xl-10">
+
+            <!-- Header -->
+            <div class="mb-4">
+
+                <a asp-action="Index"
+                   class="text-decoration-none text-muted">
+
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Back to Products
+
+                </a>
+
+                <h2 class="fw-bold mt-3 mb-1">
+                    Add Product
+                </h2>
+
+                <p class="text-muted mb-0">
+                    Add a new product to BDTechMarket inventory.
+                </p>
+
+            </div>
+
+            <!-- Validation -->
+            <div asp-validation-summary="ModelOnly"
+                 class="alert alert-danger"
+                 role="alert">
+            </div>
+
+            <form asp-action="Create"
+                  method="post"
+                  enctype="multipart/form-data">
+
+                @Html.AntiForgeryToken()
+
+                <div class="card border-0 shadow-sm">
+
+                    <div class="card-body p-4 p-lg-5">
+
+                        <div class="row g-4">
+
+                            <!-- =====================================================
+                                 LEFT COLUMN
+                            ====================================================== -->
+
+                            <div class="col-lg-7">
+
+                                <!-- Product Name -->
+                                <div class="mb-4">
+
+                                    <label asp-for="Name"
+                                           class="form-label fw-semibold">
+                                        Product Name
+                                    </label>
+
+                                    <input asp-for="Name"
+                                           class="form-control form-control-lg"
+                                           placeholder="e.g. Samsung Galaxy S25"
+                                           autocomplete="off" />
+
+                                    <span asp-validation-for="Name"
+                                          class="text-danger small">
+                                    </span>
+
+                                </div>
+
+                                <!-- =================================================
+                                     BRAND + SKU
+                                ================================================== -->
+
+                                <div class="row g-3">
+
+                                    <!-- Brand -->
+                                    <div class="col-md-6">
+
+                                        <label asp-for="BrandId"
+                                               class="form-label fw-semibold">
+                                            Brand
+                                        </label>
+
+                                        <select asp-for="BrandId"
+                                                asp-items="ViewBag.BrandId"
+                                                class="form-select">
+
+                                            <option value="">
+                                                -- Select Brand --
+                                            </option>
+
+                                        </select>
+
+                                        <span asp-validation-for="BrandId"
+                                              class="text-danger small">
+                                        </span>
+
+                                        <div class="form-text">
+                                            Select an active brand from the catalog.
+                                        </div>
+
+                                    </div>
+
+                                    <!-- SKU -->
+                                    <div class="col-md-6">
+
+                                        <label class="form-label fw-semibold">
+                                            SKU
+                                        </label>
+
+                                        <div class="form-control bg-light text-muted">
+                                            <i class="bi bi-magic me-2"></i>
+                                            Auto Generated
+                                        </div>
+
+                                        <div class="form-text">
+                                            SKU will be generated automatically.
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <!-- =================================================
+                                     PRICE + STOCK
+                                ================================================== -->
+
+                                <div class="row g-3 mt-1">
+
+                                    <!-- Price -->
+                                    <div class="col-md-6">
+
+                                        <label asp-for="Price"
+                                               class="form-label fw-semibold">
+                                            Price
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <span class="input-group-text">
+                                                ৳
+                                            </span>
+
+                                            <input asp-for="Price"
+                                                   class="form-control"
+                                                   type="number"
+                                                   min="0.01"
+                                                   step="0.01"
+                                                   placeholder="0.00" />
+
+                                        </div>
+
+                                        <span asp-validation-for="Price"
+                                              class="text-danger small">
+                                        </span>
+
+                                    </div>
+
+                                    <!-- Stock -->
+                                    <div class="col-md-6">
+
+                                        <label asp-for="StockQuantity"
+                                               class="form-label fw-semibold">
+                                            Stock Quantity
+                                        </label>
+
+                                        <input asp-for="StockQuantity"
+                                               class="form-control"
+                                               type="number"
+                                               min="0"
+                                               max="100000"
+                                               step="1" />
+
+                                        <span asp-validation-for="StockQuantity"
+                                              class="text-danger small">
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                                <!-- =================================================
+                                     CATEGORY
+                                ================================================== -->
+
+                                <div class="mt-4">
+
+                                    <label asp-for="CategoryId"
+                                           class="form-label fw-semibold">
+                                        Category
+                                    </label>
+
+                                    <select asp-for="CategoryId"
+                                            asp-items="ViewBag.CategoryId"
+                                            class="form-select">
+
+                                        <option value="">
+                                            -- Select Category --
+                                        </option>
+
+                                    </select>
+
+                                    <span asp-validation-for="CategoryId"
+                                          class="text-danger small">
+                                    </span>
+
+                                </div>
+
+                                <!-- =================================================
+                                     DESCRIPTION
+                                ================================================== -->
+
+                                <div class="mt-4">
+
+                                    <label asp-for="Description"
+                                           class="form-label fw-semibold">
+                                        Description
+                                    </label>
+
+                                    <textarea asp-for="Description"
+                                              class="form-control"
+                                              rows="6"
+                                              maxlength="2000"
+                                              placeholder="Enter product description, specifications, warranty information, etc."></textarea>
+
+                                    <div class="d-flex justify-content-between">
+
+                                        <span asp-validation-for="Description"
+                                              class="text-danger small">
+                                        </span>
+
+                                        <small class="text-muted ms-auto">
+                                            Maximum 2000 characters
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <!-- =====================================================
+                                 RIGHT COLUMN
+                            ====================================================== -->
+
+                            <div class="col-lg-5">
+
+                                <!-- =================================================
+                                     IMAGE UPLOAD
+                                ================================================== -->
+
+                                <div>
+
+                                    <label asp-for="ImageFile"
+                                           class="form-label fw-semibold">
+                                        Product Image
+                                    </label>
+
+                                    <div id="uploadArea"
+                                         class="upload-area">
+
+                                        <input asp-for="ImageFile"
+                                               id="imageInput"
+                                               type="file"
+                                               class="d-none"
+                                               accept=".jpg,.jpeg,.png,.webp" />
+
+                                        <label for="imageInput"
+                                               class="upload-label">
+
+                                            <div id="uploadContent">
+
+                                                <div class="upload-icon mb-3">
+                                                    <i class="bi bi-cloud-arrow-up-fill"></i>
+                                                </div>
+
+                                                <h5 class="fw-bold">
+                                                    Upload Product Image
+                                                </h5>
+
+                                                <p class="text-muted mb-2">
+                                                    Click to browse or drag & drop
+                                                </p>
+
+                                                <span class="badge bg-secondary">
+                                                    JPG · PNG · WEBP · Max 5 MB
+                                                </span>
+
+                                            </div>
+
+                                            <img id="imagePreview"
+                                                 class="image-preview d-none"
+                                                 alt="Product preview" />
+
+                                        </label>
+
+                                    </div>
+
+                                    <span asp-validation-for="ImageFile"
+                                          class="text-danger small">
+                                    </span>
+
+                                </div>
+
+                                <!-- =================================================
+                                     INFORMATION
+                                ================================================== -->
+
+                                <div class="alert alert-light border mt-4">
+
+                                    <div class="d-flex gap-3">
+
+                                        <i class="bi bi-info-circle-fill text-primary fs-5"></i>
+
+                                        <div>
+
+                                            <div class="fw-semibold">
+                                                Product image is optional.
+                                            </div>
+
+                                            <div class="text-muted small mt-1">
+                                                Maximum upload size is 5 MB.
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <!-- =================================================
+                                     SKU INFORMATION
+                                ================================================== -->
+
+                                <div class="card border-0 bg-light mt-4">
+
+                                    <div class="card-body">
+
+                                        <h6 class="fw-bold">
+
+                                            <i class="bi bi-upc-scan me-2"></i>
+
+                                            SKU Information
+
+                                        </h6>
+
+                                        <p class="text-muted small mb-2">
+
+                                            The system will automatically generate
+                                            a unique SKU after the product is created.
+
+                                        </p>
+
+                                        <code>
+                                            CATEGORY-BRAND-ID
+                                        </code>
+
+                                        <div class="small text-muted mt-2">
+
+                                            Example:
+
+                                            <strong>
+                                                MOB-SAM-000005
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <!-- =================================================
+                                     BRAND INFORMATION
+                                ================================================== -->
+
+                                <div class="card border-0 bg-light mt-3">
+
+                                    <div class="card-body">
+
+                                        <h6 class="fw-bold">
+
+                                            <i class="bi bi-tags me-2"></i>
+
+                                            Brand Information
+
+                                        </h6>
+
+                                        <p class="text-muted small mb-0">
+
+                                            Brands are managed separately from
+                                            the product catalog. Only active
+                                            brands can be selected.
+
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- =========================================================
+                         FOOTER
+                    ========================================================== -->
+
+                    <div class="card-footer bg-white border-0 p-4">
+
+                        <div class="d-flex justify-content-end gap-2">
+
+                            <a asp-action="Index"
+                               class="btn btn-outline-secondary px-4">
+
+                                Cancel
+
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-primary px-4">
+
+                                <i class="bi bi-check-lg me-1"></i>
+
+                                Create Product
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================================================
+     STYLES
+========================================================== -->
+
+<style>
+
+    .upload-area {
+        border: 2px dashed #dee2e6;
+        border-radius: 12px;
+        min-height: 360px;
+        background: #f8f9fa;
+        transition: all 0.2s ease;
+        overflow: hidden;
+    }
+
+    .upload-area:hover {
+        border-color: #0d6efd;
+        background: #f5f9ff;
+    }
+
+    .upload-label {
+        width: 100%;
+        min-height: 360px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        cursor: pointer;
+        padding: 30px;
+    }
+
+    .upload-icon {
+        font-size: 52px;
+        color: #0d6efd;
+    }
+
+    .image-preview {
+        width: 100%;
+        height: 330px;
+        object-fit: contain;
+        border-radius: 8px;
+    }
+
+</style>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        const imageInput =
+            document.getElementById("imageInput");
+
+        const imagePreview =
+            document.getElementById("imagePreview");
+
+        const uploadContent =
+            document.getElementById("uploadContent");
+
+
+        imageInput.addEventListener("change", function () {
+
+            const file = this.files[0];
+
+            if (!file) {
+
+                imagePreview.classList.add("d-none");
+
+                uploadContent.classList.remove("d-none");
+
+                return;
+            }
+
+
+            // File size validation
+
+            if (file.size > 5 * 1024 * 1024) {
+
+                alert("Image size cannot exceed 5 MB.");
+
+                this.value = "";
+
+                imagePreview.classList.add("d-none");
+
+                uploadContent.classList.remove("d-none");
+
+                return;
+            }
+
+
+            // File type validation
+
+            const allowedTypes = [
+                "image/jpeg",
+                "image/png",
+                "image/webp"
+            ];
+
+
+            if (!allowedTypes.includes(file.type)) {
+
+                alert("Only JPG, PNG and WEBP images are allowed.");
+
+                this.value = "";
+
+                imagePreview.classList.add("d-none");
+
+                uploadContent.classList.remove("d-none");
+
+                return;
+            }
+
+
+            // Preview
+
+            const reader = new FileReader();
+
+
+            reader.onload = function (event) {
+
+                imagePreview.src =
+                    event.target.result;
+
+                imagePreview.classList.remove("d-none");
+
+                uploadContent.classList.add("d-none");
+
+            };
+
+
+            reader.readAsDataURL(file);
+
+        });
+
+    </script>
+}

@@ -1,0 +1,752 @@
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model IEnumerable<BDTechMarket.Models.Product>
+
+@{
+    ViewData["Title"] = "Products | BDTechMarket";
+
+    var categories = ViewBag.Categories as SelectList;
+    var searchString = ViewBag.SearchString as string;
+    var selectedCategory = ViewBag.CategoryId as int?;
+}
+
+<div class="container py-5">
+
+    <!-- =========================================================
+         PAGE HEADER
+         ========================================================= -->
+
+    <div class="d-flex flex-column flex-md-row
+                justify-content-between
+                align-items-md-center
+                gap-3 mb-4">
+
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+
+                <div class="title-icon">
+                    <i class="fas fa-microchip"></i>
+                </div>
+
+                <h2 class="fw-bold mb-0">
+                    Available Tech Gadgets
+                </h2>
+
+            </div>
+
+            <p class="text-muted mb-0">
+                Discover the latest technology products at BDTechMarket.
+            </p>
+        </div>
+
+
+        <!-- Admin Add Product -->
+
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-controller="Product"
+               asp-action="Create"
+               class="btn btn-primary px-4 rounded-pill fw-bold">
+
+                <i class="fas fa-plus me-2"></i>
+                Add Product
+
+            </a>
+        }
+
+    </div>
+
+
+    <!-- =========================================================
+         SEARCH & FILTER
+         ========================================================= -->
+
+    <div class="card filter-card border-0 shadow-sm mb-5">
+
+        <div class="card-body p-3 p-md-4">
+
+            <form asp-controller="Home"
+                  asp-action="Products"
+                  method="get">
+
+                <div class="row g-3 align-items-end">
+
+                    <!-- Search -->
+
+                    <div class="col-lg-5">
+
+                        <label class="form-label fw-semibold">
+                            Search Products
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text
+                                         bg-white
+                                         border-end-0">
+
+                                <i class="fas fa-search text-muted"></i>
+
+                            </span>
+
+                            <input type="text"
+                                   name="searchString"
+                                   value="@searchString"
+                                   class="form-control border-start-0"
+                                   placeholder="Search by product, brand or description..." />
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Category -->
+
+                    <div class="col-lg-4">
+
+                        <label class="form-label fw-semibold">
+                            Category
+                        </label>
+
+                        <select name="categoryId"
+                                class="form-select">
+
+                            <option value="">
+                                All Categories
+                            </option>
+
+                            @if (categories != null)
+                            {
+                                foreach (var category in categories)
+                                {
+                                    <option value="@category.Value"
+                                            selected="@(category.Selected)">
+                                        @category.Text
+                                    </option>
+                                }
+                            }
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Buttons -->
+
+                    <div class="col-lg-3">
+
+                        <div class="d-flex gap-2">
+
+                            <button type="submit"
+                                    class="btn btn-primary
+                                           flex-grow-1
+                                           fw-bold">
+
+                                <i class="fas fa-filter me-2"></i>
+                                Apply Filters
+
+                            </button>
+
+
+                            <a asp-controller="Home"
+                               asp-action="Products"
+                               class="btn btn-outline-secondary"
+                               title="Clear Filters">
+
+                                <i class="fas fa-sync-alt"></i>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         RESULT INFORMATION
+         ========================================================= -->
+
+    <div class="d-flex
+                justify-content-between
+                align-items-center
+                mb-4">
+
+        <div>
+
+            <h5 class="fw-bold mb-1">
+                Products
+            </h5>
+
+            <span class="text-muted small">
+                @Model.Count() product(s) available
+            </span>
+
+        </div>
+
+
+        @if (!string.IsNullOrWhiteSpace(searchString))
+        {
+            <span class="badge bg-primary-subtle
+                         text-primary
+                         px-3 py-2">
+
+                Search:
+                <strong>@searchString</strong>
+
+            </span>
+        }
+
+    </div>
+
+
+    <!-- =========================================================
+         PRODUCT GRID
+         ========================================================= -->
+
+    @if (Model.Any())
+    {
+        <div class="row row-cols-1
+                    row-cols-sm-2
+                    row-cols-lg-3
+                    row-cols-xl-4
+                    g-4">
+
+            @foreach (var product in Model)
+            {
+                <div class="col">
+
+                    <div class="card product-card
+                                h-100
+                                border-0
+                                shadow-sm">
+
+
+                        <!-- IMAGE AREA -->
+
+                        <div class="product-image-wrapper
+                                    position-relative">
+
+                            @if (!string.IsNullOrWhiteSpace(product.ImageUrl))
+                            {
+                                <img src="@Url.Content(product.ImageUrl)"
+                                     class="product-image"
+                                     alt="@product.Name" />
+                            }
+                            else
+                            {
+                                <div class="product-image
+                                            no-image
+                                            d-flex
+                                            align-items-center
+                                            justify-content-center">
+
+                                    <div class="text-center">
+
+                                        <i class="fas fa-image
+                                                  fa-3x
+                                                  text-muted
+                                                  mb-2"></i>
+
+                                        <small class="text-muted d-block">
+                                            No Image
+                                        </small>
+
+                                    </div>
+
+                                </div>
+                            }
+
+
+                            <!-- CATEGORY BADGE -->
+
+                            @if (product.Category != null)
+                            {
+                                <span class="position-absolute
+                                             top-0
+                                             end-0
+                                             badge
+                                             category-badge
+                                             m-3">
+
+                                    @product.Category.Name
+
+                                </span>
+                            }
+
+
+                            <!-- STOCK STATUS -->
+
+                            @if (product.StockQuantity <= 0)
+                            {
+                                <span class="position-absolute
+                                             bottom-0
+                                             start-0
+                                             badge
+                                             bg-danger
+                                             m-3">
+
+                                    Out of Stock
+
+                                </span>
+                            }
+                            else if (product.StockQuantity <= 5)
+                            {
+                                <span class="position-absolute
+                                             bottom-0
+                                             start-0
+                                             badge
+                                             bg-warning
+                                             text-dark
+                                             m-3">
+
+                                    Low Stock
+
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="position-absolute
+                                             bottom-0
+                                             start-0
+                                             badge
+                                             bg-success
+                                             m-3">
+
+                                    In Stock
+
+                                </span>
+                            }
+
+                        </div>
+
+
+                        <!-- PRODUCT BODY -->
+
+                        <div class="card-body d-flex flex-column p-4">
+
+                            <!-- Brand -->
+
+                            @if (!string.IsNullOrWhiteSpace(product.Brand))
+                            {
+                                <small class="text-muted
+                                              fw-semibold
+                                              text-uppercase
+                                              mb-1">
+
+                                    @product.Brand
+
+                                </small>
+                            }
+
+
+                            <!-- Name -->
+
+                            <h5 class="product-title fw-bold mb-2">
+
+                                @product.Name
+
+                            </h5>
+
+
+                            <!-- Description -->
+
+                            @if (!string.IsNullOrWhiteSpace(product.Description))
+                            {
+                                <p class="product-description
+                                          text-muted
+                                          small
+                                          mb-3">
+
+                                    @(product.Description.Length > 85
+                                        ? product.Description.Substring(0, 85) + "..."
+                                        : product.Description)
+
+                                </p>
+                            }
+                            else
+                            {
+                                <p class="product-description
+                                          text-muted
+                                          small
+                                          mb-3">
+
+                                    No description available.
+
+                                </p>
+                            }
+
+
+                            <!-- Price -->
+
+                            <div class="mt-auto">
+
+                                <div class="price-row
+                                            d-flex
+                                            justify-content-between
+                                            align-items-center
+                                            mb-3">
+
+                                    <div>
+
+                                        <span class="price">
+                                            ৳@product.Price.ToString("N0")
+                                        </span>
+
+                                        <small class="text-muted">
+                                            BDT
+                                        </small>
+
+                                    </div>
+
+
+                                    @if (product.StockQuantity > 0)
+                                    {
+                                        <small class="text-muted">
+                                            @product.StockQuantity left
+                                        </small>
+                                    }
+
+                                </div>
+
+
+                                <!-- VIEW DETAILS -->
+
+                                <a asp-controller="Product"
+                                   asp-action="Details"
+                                   asp-route-id="@product.Id"
+                                   class="btn btn-outline-primary
+                                          w-100
+                                          rounded-pill
+                                          fw-semibold
+                                          mb-2">
+
+                                    <i class="fas fa-eye me-2"></i>
+                                    View Details
+
+                                </a>
+
+
+                                <!-- ADD TO CART -->
+
+                                @if (product.StockQuantity > 0)
+                                {
+                                    <form asp-controller="Cart"
+                                          asp-action="AddToCart"
+                                          method="post">
+
+                                        <input type="hidden"
+                                               name="productId"
+                                               value="@product.Id" />
+
+                                        <input type="hidden"
+                                               name="quantity"
+                                               value="1" />
+
+                                        <button type="submit"
+                                                class="btn btn-dark
+                                                       w-100
+                                                       rounded-pill
+                                                       fw-semibold">
+
+                                            <i class="fas fa-cart-plus me-2"></i>
+                                            Add to Cart
+
+                                        </button>
+
+                                    </form>
+                                }
+                                else
+                                {
+                                    <button type="button"
+                                            class="btn btn-secondary
+                                                   w-100
+                                                   rounded-pill"
+                                            disabled>
+
+                                        <i class="fas fa-ban me-2"></i>
+                                        Out of Stock
+
+                                    </button>
+                                }
+
+
+                                <!-- ADMIN ACTIONS -->
+
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <div class="d-flex gap-2 mt-2">
+
+                                        <a asp-controller="Product"
+                                           asp-action="Edit"
+                                           asp-route-id="@product.Id"
+                                           class="btn btn-outline-secondary
+                                                  flex-grow-1
+                                                  rounded-pill">
+
+                                            <i class="fas fa-edit me-1"></i>
+                                            Edit
+
+                                        </a>
+
+                                        <a asp-controller="Product"
+                                           asp-action="Delete"
+                                           asp-route-id="@product.Id"
+                                           class="btn btn-outline-danger
+                                                  rounded-pill">
+
+                                            <i class="fas fa-trash"></i>
+
+                                        </a>
+
+                                    </div>
+                                }
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+    else
+    {
+        <!-- =====================================================
+             EMPTY STATE
+             ===================================================== -->
+
+        <div class="card
+                    border-0
+                    shadow-sm
+                    empty-state">
+
+            <div class="card-body
+                        text-center
+                        py-5">
+
+                <div class="empty-icon mb-4">
+
+                    <i class="fas fa-search"></i>
+
+                </div>
+
+                <h4 class="fw-bold">
+                    No Products Found
+                </h4>
+
+                <p class="text-muted mb-4">
+
+                    We couldn't find any products
+                    matching your search or category.
+
+                </p>
+
+                <a asp-controller="Home"
+                   asp-action="Products"
+                   class="btn btn-primary rounded-pill px-4">
+
+                    <i class="fas fa-sync-alt me-2"></i>
+                    View All Products
+
+                </a>
+
+            </div>
+
+        </div>
+    }
+
+</div>
+
+
+<!-- =============================================================
+     PAGE STYLES
+     ============================================================= -->
+
+<style>
+
+    body {
+        background-color: #f5f7fa;
+    }
+
+    /* Page Icon */
+
+    .title-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #e8f1ff;
+        color: #0d6efd;
+        border-radius: 12px;
+        font-size: 1.4rem;
+    }
+
+
+    /* Filter */
+
+    .filter-card {
+        border-radius: 16px;
+    }
+
+
+    .filter-card .form-control,
+    .filter-card .form-select {
+        min-height: 50px;
+        border-radius: 10px;
+    }
+
+
+    .filter-card .input-group-text {
+        border-radius: 10px 0 0 10px;
+    }
+
+
+    .filter-card .form-control {
+        border-radius: 0 10px 10px 0;
+    }
+
+
+    /* Product Card */
+
+    .product-card {
+        border-radius: 16px;
+        overflow: hidden;
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease;
+    }
+
+
+    .product-card:hover {
+        transform: translateY(-7px);
+        box-shadow:
+            0 1rem 2rem rgba(0, 0, 0, 0.12) !important;
+    }
+
+
+    /* Product Image */
+
+    .product-image-wrapper {
+        height: 230px;
+        background: #f8f9fa;
+        overflow: hidden;
+    }
+
+
+    .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        padding: 18px;
+        transition: transform 0.35s ease;
+    }
+
+
+    .product-card:hover .product-image {
+        transform: scale(1.06);
+    }
+
+
+    .no-image {
+        background: #f1f3f5;
+    }
+
+
+    /* Category */
+
+    .category-badge {
+        background: #0dcaf0;
+        color: white;
+        font-size: 0.75rem;
+        padding: 7px 10px;
+        border-radius: 7px;
+    }
+
+
+    /* Product Title */
+
+    .product-title {
+        min-height: 48px;
+        line-height: 1.4;
+    }
+
+
+    /* Description */
+
+    .product-description {
+        min-height: 42px;
+        line-height: 1.5;
+    }
+
+
+    /* Price */
+
+    .price {
+        color: #0d6efd;
+        font-size: 1.35rem;
+        font-weight: 800;
+    }
+
+
+    /* Empty */
+
+    .empty-state {
+        border-radius: 16px;
+    }
+
+
+    .empty-icon {
+        width: 80px;
+        height: 80px;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #e9ecef;
+        color: #6c757d;
+        font-size: 2rem;
+    }
+
+
+    /* Buttons */
+
+    .btn {
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+
+    .btn:hover {
+        transform: translateY(-1px);
+    }
+
+
+    /* Mobile */
+
+    @@media (max-width: 575.98px) {
+
+        .product-image-wrapper {
+            height: 220px;
+        }
+
+        .title-icon {
+            width: 42px;
+            height: 42px;
+        }
+
+    }
+
+</style>

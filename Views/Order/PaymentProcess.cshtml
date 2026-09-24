@@ -1,0 +1,130 @@
+@{ Layout = null; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Secure Card Checkout | BDTechMarket</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background: #eef2f7; font-family: 'Segoe UI', sans-serif; }
+        .payment-wrapper { max-width: 480px; margin: 40px auto; }
+        
+        /* Virtual Card Styling */
+        .virtual-card {
+            background: linear-gradient(135deg, #1a1a1a 0%, #434343 100%);
+            color: white; border-radius: 15px; padding: 25px;
+            height: 220px; position: relative; margin-bottom: -50px;
+            z-index: 2; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transition: 0.3s;
+        }
+        .card-number-display { font-size: 1.4rem; letter-spacing: 3px; margin-top: 40px; display: block; height: 30px; }
+        .chip { width: 45px; height: 35px; background: #ffd700; border-radius: 5px; opacity: 0.8; }
+        
+        /* Form Container */
+        .form-container { 
+            background: white; padding: 70px 30px 30px; 
+            border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            z-index: 1; position: relative;
+        }
+        .btn-pay { 
+            background: #1a1a1a; color: white; width: 100%; border: none; 
+            padding: 15px; border-radius: 10px; font-weight: 700; 
+            margin-top: 20px; transition: 0.3s; 
+        }
+        .btn-pay:hover { background: #ffc107; color: #000; }
+    </style>
+</head>
+<body>
+
+<div class="payment-wrapper">
+    <div class="virtual-card">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="chip"></div>
+            <i class="fab fa-cc-visa fa-2x" id="cardLogo"></i>
+        </div>
+        <span class="card-number-display" id="displayCard">**** **** **** ****</span>
+        <div class="d-flex justify-content-between mt-4">
+            <div>
+                <small class="opacity-50 d-block">Card Holder</small>
+                <span id="displayName" class="small">YOUR NAME</span>
+            </div>
+            <div>
+                <small class="opacity-50 d-block">Expires</small>
+                <span id="displayExpiry" class="small">MM/YY</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-container">
+        <div class="mb-4 text-center">
+            <h5 class="fw-bold">Card Details</h5>
+            <p class="text-muted small">Payable Amount: <span class="text-dark fw-bold">৳@ViewBag.Amount</span></p>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label small fw-bold text-muted">CARDHOLDER NAME</label>
+            <input type="text" class="form-control" id="cardName" placeholder="Full Name" oninput="updateCard()">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label small fw-bold text-muted">CARD NUMBER</label>
+            <input type="text" class="form-control" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19" oninput="updateCard()">
+        </div>
+
+        <div class="row">
+            <div class="col-6 mb-3">
+                <label class="form-label small fw-bold text-muted">EXPIRY DATE</label>
+                <input type="text" class="form-control" id="expiry" placeholder="MM/YY" maxlength="5" oninput="updateCard()">
+            </div>
+            <div class="col-6 mb-3">
+                <label class="form-label small fw-bold text-muted">CVV</label>
+                <input type="password" class="form-control" id="cvv" placeholder="***" maxlength="3">
+            </div>
+        </div>
+
+        <button type="button" onclick="processPayment()" class="btn-pay">
+            <i class="fas fa-lock me-2"></i>CONFIRM PAYMENT
+        </button>
+        
+        <div class="text-center mt-3">
+            <small class="text-muted"><i class="fas fa-shield-check"></i> Secured by SSL 128-bit encryption</small>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateCard() {
+        const num = document.getElementById('cardNumber').value;
+        const name = document.getElementById('cardName').value;
+        const exp = document.getElementById('expiry').value;
+
+        // Auto-format card number
+        let formattedNum = num.replace(/\s?/g, '').replace(/(\d{4})/g, '$1 ').trim();
+        document.getElementById('cardNumber').value = formattedNum;
+
+        // Update Display
+        document.getElementById('displayCard').innerText = formattedNum || "**** **** **** ****";
+        document.getElementById('displayName').innerText = name.toUpperCase() || "YOUR NAME";
+        document.getElementById('displayExpiry').innerText = exp || "MM/YY";
+
+        // Logic to switch icons (Simple simulation)
+        const logo = document.getElementById('cardLogo');
+        if(num.startsWith('4')) logo.className = "fab fa-cc-visa fa-2x";
+        else if(num.startsWith('5')) logo.className = "fab fa-cc-mastercard fa-2x";
+    }
+
+    function processPayment() {
+        // Validation logic
+        const card = document.getElementById('cardNumber').value.replace(/\s/g, '');
+        if (card.length === 16) {
+            alert("🚀 Payment Authorized Successfully!");
+            window.location.href = '/Order/OrderSuccess?id=' + @ViewBag.OrderId;
+        } else {
+            alert("❌ Invalid card number. Please check again.");
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,86 @@
+diff --git a/.gitignore b/.gitignore
+index 4e0603a..c0913e1 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,19 +1,71 @@
+-## .NET
+-bin/
+-obj/
+-*.user
+-*.suo
++## =========================
++## Build artifacts (.NET)
++## =========================
++[Bb]in/
++[Oo]bj/
++*.dll
++*.exe
++*.pdb
+ 
+-## Visual Studio / Rider
++## =========================
++## Visual Studio / Rider / VS Code
++## =========================
+ .vs/
+ .idea/
++*.user
++*.suo
+ *.userosscache
+ *.sln.docstates
++*.userprefs
++.vscode/
+ 
+-## OS
+-.DS_Store
+-Thumbs.db
++## =========================
++## Test results
++## =========================
++[Tt]est[Rr]esult*/
++*.trx
++*.coverage
++*.coveragexml
+ 
+-## Secrets (never commit real values)
++## =========================
++## Publish / deployment output
++## =========================
++[Pp]ublish/
++*.publishsettings
++PublishScripts/
++
++## =========================
++## Secrets & environment-specific config
++## =========================
++# Real per-environment settings that could hold live secrets.
++# appsettings.json / appsettings.Development.json stay tracked
++# (they only contain placeholders / local dev config right now).
+ appsettings.Production.json
++appsettings.*.local.json
++appsettings.Local.json
+ *.pfx
++*.p12
++*.key
++*.pem
++.env
++.env.*
++secrets.json
++**/secrets.json
++
++## =========================
++## OS-specific files
++## =========================
++.DS_Store
++Thumbs.db
++desktop.ini
++
++## =========================
++## Logs
++## =========================
++*.log
++logs/
++
++## =========================
++## Frontend tooling (not currently used, kept as a safeguard)
++## =========================
++node_modules/

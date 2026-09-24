@@ -1,0 +1,1046 @@
+@model IEnumerable<BDTechMarket.Models.Product>
+
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = "Products";
+
+    var categories = ViewBag.Categories as SelectList;
+    var brands = ViewBag.Brands as SelectList;
+
+    var searchString = ViewBag.SearchString as string;
+
+    int? selectedCategory = ViewBag.CategoryId as int?;
+    int? selectedBrand = ViewBag.BrandId as int?;
+
+    decimal? minPrice = ViewBag.MinPrice as decimal?;
+    decimal? maxPrice = ViewBag.MaxPrice as decimal?;
+
+    var stockStatus = ViewBag.StockStatus as string;
+    var sortOrder = ViewBag.SortOrder as string;
+    var status = ViewBag.Status as string;
+
+    bool isAdmin = User.IsInRole("Admin");
+
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+    int totalProducts = ViewBag.TotalProducts ?? 0;
+}
+
+<div class="container py-4">
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="d-flex flex-column flex-md-row
+                justify-content-between
+                align-items-md-center
+                gap-3 mb-4">
+
+        <div>
+
+            <h2 class="fw-bold mb-1">
+
+                <i class="fas fa-box-open text-primary me-2"></i>
+
+                Products
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Browse and manage your product catalog.
+
+            </p>
+
+        </div>
+
+
+        @if (isAdmin)
+        {
+            <a asp-action="Create"
+               class="btn btn-primary rounded-pill px-4">
+
+                <i class="fas fa-plus me-1"></i>
+
+                Add Product
+
+            </a>
+        }
+
+    </div>
+
+
+    <!-- =====================================================
+         ADVANCED FILTERS
+    ====================================================== -->
+
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+
+        <div class="card-body p-4">
+
+            <div class="d-flex justify-content-between
+                        align-items-center mb-4">
+
+                <div>
+
+                    <h5 class="fw-bold mb-1">
+
+                        <i class="fas fa-sliders-h
+                                  text-primary me-2"></i>
+
+                        Filter Products
+
+                    </h5>
+
+                    <small class="text-muted">
+
+                        Search and filter products by
+                        category, brand, price and stock.
+
+                    </small>
+
+                </div>
+
+                <a asp-action="Index"
+                   class="btn btn-outline-secondary
+                          btn-sm rounded-pill px-3">
+
+                    <i class="fas fa-rotate-left me-1"></i>
+
+                    Clear
+
+                </a>
+
+            </div>
+
+
+            <form asp-action="Index"
+                  method="get">
+
+                <!-- =================================================
+                     ROW 1
+                ================================================== -->
+
+                <div class="row g-3">
+
+                    <!-- Search -->
+
+                    <div class="col-lg-4">
+
+                        <label class="form-label fw-semibold">
+
+                            Search
+
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text bg-white">
+
+                                <i class="fas fa-search text-muted"></i>
+
+                            </span>
+
+                            <input type="text"
+                                   name="searchString"
+                                   value="@searchString"
+                                   class="form-control"
+                                   placeholder="Product, brand or SKU..." />
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Category -->
+
+                    <div class="col-lg-4 col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Category
+
+                        </label>
+
+                        <select name="categoryId"
+                                class="form-select">
+
+                            <option value="">
+                                All Categories
+                            </option>
+
+                            @if (categories != null)
+                            {
+                                foreach (var category in categories)
+                                {
+                                    if (selectedCategory.HasValue &&
+                                        selectedCategory.Value.ToString()
+                                        == category.Value)
+                                    {
+                                        <option value="@category.Value"
+                                                selected>
+                                            @category.Text
+                                        </option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@category.Value">
+                                            @category.Text
+                                        </option>
+                                    }
+                                }
+                            }
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Brand -->
+
+                    <div class="col-lg-4 col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Brand
+
+                        </label>
+
+                        <select name="brandId"
+                                class="form-select">
+
+                            <option value="">
+                                All Brands
+                            </option>
+
+                            @if (brands != null)
+                            {
+                                foreach (var brand in brands)
+                                {
+                                    if (selectedBrand.HasValue &&
+                                        selectedBrand.Value.ToString()
+                                        == brand.Value)
+                                    {
+                                        <option value="@brand.Value"
+                                                selected>
+                                            @brand.Text
+                                        </option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@brand.Value">
+                                            @brand.Text
+                                        </option>
+                                    }
+                                }
+                            }
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     ROW 2
+                ================================================== -->
+
+                <div class="row g-3 mt-1">
+
+                    <!-- Minimum Price -->
+
+                    <div class="col-lg-3 col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Minimum Price
+
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+                                ৳
+                            </span>
+
+                            <input type="number"
+                                   name="minPrice"
+                                   value="@minPrice"
+                                   class="form-control"
+                                   min="0"
+                                   step="0.01"
+                                   placeholder="0" />
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Maximum Price -->
+
+                    <div class="col-lg-3 col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Maximum Price
+
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+                                ৳
+                            </span>
+
+                            <input type="number"
+                                   name="maxPrice"
+                                   value="@maxPrice"
+                                   class="form-control"
+                                   min="0"
+                                   step="0.01"
+                                   placeholder="Any" />
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Stock -->
+
+                    <div class="col-lg-3 col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Stock
+
+                        </label>
+
+                        <select name="stockStatus"
+                                class="form-select">
+
+                            <option value="all"
+                                    selected="@(stockStatus == "all")">
+
+                                All Stock
+
+                            </option>
+
+                            <option value="instock"
+                                    selected="@(stockStatus == "instock")">
+
+                                In Stock
+
+                            </option>
+
+                            <option value="lowstock"
+                                    selected="@(stockStatus == "lowstock")">
+
+                                Low Stock
+
+                            </option>
+
+                            <option value="outofstock"
+                                    selected="@(stockStatus == "outofstock")">
+
+                                Out of Stock
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Sort -->
+
+                    <div class="col-lg-3 col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Sort By
+
+                        </label>
+
+                        <select name="sortOrder"
+                                class="form-select">
+
+                            <option value="">
+                                Latest
+                            </option>
+
+                            <option value="newest"
+                                    selected="@(sortOrder == "newest")">
+
+                                Newest
+
+                            </option>
+
+                            <option value="oldest"
+                                    selected="@(sortOrder == "oldest")">
+
+                                Oldest
+
+                            </option>
+
+                            <option value="name_asc"
+                                    selected="@(sortOrder == "name_asc")">
+
+                                Name A-Z
+
+                            </option>
+
+                            <option value="name_desc"
+                                    selected="@(sortOrder == "name_desc")">
+
+                                Name Z-A
+
+                            </option>
+
+                            <option value="price_asc"
+                                    selected="@(sortOrder == "price_asc")">
+
+                                Price Low-High
+
+                            </option>
+
+                            <option value="price_desc"
+                                    selected="@(sortOrder == "price_desc")">
+
+                                Price High-Low
+
+                            </option>
+
+                            <option value="stock_asc"
+                                    selected="@(sortOrder == "stock_asc")">
+
+                                Stock Low-High
+
+                            </option>
+
+                            <option value="stock_desc"
+                                    selected="@(sortOrder == "stock_desc")">
+
+                                Stock High-Low
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     ADMIN STATUS
+                ================================================== -->
+
+                @if (isAdmin)
+                {
+                    <div class="row g-3 mt-1">
+
+                        <div class="col-lg-3 col-md-6">
+
+                            <label class="form-label fw-semibold">
+
+                                Product Status
+
+                            </label>
+
+                            <select name="status"
+                                    class="form-select">
+
+                                <option value="all"
+                                        selected="@(status == "all")">
+
+                                    All Products
+
+                                </option>
+
+                                <option value="active"
+                                        selected="@(status == "active")">
+
+                                    Active
+
+                                </option>
+
+                                <option value="inactive"
+                                        selected="@(status == "inactive")">
+
+                                    Inactive
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-6
+                                    d-flex align-items-end">
+
+                            <button type="submit"
+                                    class="btn btn-primary
+                                           rounded-pill w-100">
+
+                                <i class="fas fa-filter me-1"></i>
+
+                                Apply Filters
+
+                            </button>
+
+                        </div>
+
+                    </div>
+                }
+                else
+                {
+                    <div class="mt-3">
+
+                        <button type="submit"
+                                class="btn btn-primary
+                                       rounded-pill px-4">
+
+                            <i class="fas fa-filter me-1"></i>
+
+                            Apply Filters
+
+                        </button>
+
+                    </div>
+                }
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         RESULT SUMMARY
+    ====================================================== -->
+
+    <div class="d-flex flex-column
+                flex-md-row
+                justify-content-between
+                align-items-md-center
+                gap-2 mb-3">
+
+        <div class="text-muted small">
+
+            Showing
+
+            <strong>
+                @Model.Count()
+            </strong>
+
+            of
+
+            <strong>
+                @totalProducts
+            </strong>
+
+            products
+
+        </div>
+
+
+        @if (isAdmin)
+        {
+            <span class="badge bg-dark
+                         rounded-pill px-3 py-2">
+
+                <i class="fas fa-user-shield me-1"></i>
+
+                Admin Catalog
+
+            </span>
+        }
+
+    </div>
+
+
+    <!-- =====================================================
+         PRODUCT GRID
+    ====================================================== -->
+
+    <div class="row g-4">
+
+        @if (Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <div class="col-sm-6 col-lg-4 col-xl-3">
+
+                    <div class="card border-0 shadow-sm
+                                rounded-4 h-100
+                                overflow-hidden product-card">
+
+
+                        <!-- IMAGE -->
+
+                        <div class="position-relative bg-light"
+                             style="height:220px;">
+
+                            @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                            {
+                                <img src="@Url.Content(item.ImageUrl)"
+                                     alt="@item.Name"
+                                     class="w-100 h-100 product-image"
+                                     loading="lazy" />
+                            }
+                            else
+                            {
+                                <div class="d-flex
+                                            justify-content-center
+                                            align-items-center
+                                            h-100">
+
+                                    <i class="fas fa-image
+                                              fa-3x text-muted
+                                              opacity-25"></i>
+
+                                </div>
+                            }
+
+
+                            <!-- STATUS -->
+
+                            @if (isAdmin)
+                            {
+                                <div class="position-absolute
+                                            top-0 end-0 m-2">
+
+                                    @if (item.IsActive)
+                                    {
+                                        <span class="badge
+                                                     bg-success
+                                                     rounded-pill">
+
+                                            Active
+
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge
+                                                     bg-secondary
+                                                     rounded-pill">
+
+                                            Inactive
+
+                                        </span>
+                                    }
+
+                                </div>
+                            }
+
+
+                            <!-- STOCK BADGE -->
+
+                            <div class="position-absolute
+                                        bottom-0 start-0 m-2">
+
+                                @if (item.StockQuantity <= 0)
+                                {
+                                    <span class="badge
+                                                 bg-danger
+                                                 rounded-pill">
+
+                                        Out of Stock
+
+                                    </span>
+                                }
+                                else if (item.StockQuantity <= 5)
+                                {
+                                    <span class="badge
+                                                 bg-warning
+                                                 text-dark
+                                                 rounded-pill">
+
+                                        Low Stock
+
+                                    </span>
+                                }
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- BODY -->
+
+                        <div class="card-body p-4
+                                    d-flex flex-column">
+
+
+                            <!-- CATEGORY -->
+
+                            <div class="mb-2">
+
+                                @if (item.Category != null)
+                                {
+                                    <span class="badge
+                                                 bg-primary-subtle
+                                                 text-primary
+                                                 rounded-pill">
+
+                                        @item.Category.Name
+
+                                    </span>
+                                }
+
+                            </div>
+
+
+                            <!-- PRODUCT NAME -->
+
+                            <h5 class="fw-bold mb-1
+                                       product-name">
+
+                                @item.Name
+
+                            </h5>
+
+
+                            <!-- BRAND -->
+
+                            @if (item.BrandEntity != null)
+                            {
+                                <div class="text-muted small mb-2">
+
+                                    <i class="fas fa-tag me-1"></i>
+
+                                    @item.BrandEntity.Name
+
+                                </div>
+                            }
+                            else if (!string.IsNullOrWhiteSpace(item.Brand))
+                            {
+                                <div class="text-muted small mb-2">
+
+                                    <i class="fas fa-tag me-1"></i>
+
+                                    @item.Brand
+
+                                </div>
+                            }
+
+
+                            <!-- SKU -->
+
+                            @if (!string.IsNullOrWhiteSpace(item.SKU))
+                            {
+                                <div class="text-muted small mb-2">
+
+                                    SKU:
+
+                                    <span class="fw-semibold">
+
+                                        @item.SKU
+
+                                    </span>
+
+                                </div>
+                            }
+
+
+                            <!-- PRICE + STOCK -->
+
+                            <div class="mt-auto">
+
+                                <div class="d-flex
+                                            justify-content-between
+                                            align-items-center
+                                            mb-3">
+
+                                    <span class="fs-5 fw-bold
+                                                 text-primary">
+
+                                        ৳@item.Price.ToString("N2")
+
+                                    </span>
+
+
+                                    @if (item.StockQuantity > 0)
+                                    {
+                                        <span class="badge
+                                                     bg-success-subtle
+                                                     text-success
+                                                     rounded-pill">
+
+                                            @item.StockQuantity in stock
+
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge
+                                                     bg-danger-subtle
+                                                     text-danger
+                                                     rounded-pill">
+
+                                            Out of stock
+
+                                        </span>
+                                    }
+
+                                </div>
+
+
+                                <!-- ACTIONS -->
+
+                                <div class="d-flex gap-2">
+
+                                    <a asp-action="Details"
+                                       asp-route-id="@item.Id"
+                                       class="btn btn-outline-primary
+                                              btn-sm
+                                              flex-grow-1
+                                              rounded-pill">
+
+                                        <i class="fas fa-eye me-1"></i>
+
+                                        View
+
+                                    </a>
+
+
+                                    @if (isAdmin)
+                                    {
+                                        <a asp-action="Edit"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-outline-warning
+                                                  btn-sm
+                                                  rounded-pill">
+
+                                            <i class="fas fa-edit"></i>
+
+                                        </a>
+                                    }
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+        }
+        else
+        {
+            <!-- =================================================
+                 NO PRODUCTS
+            ================================================== -->
+
+            <div class="col-12">
+
+                <div class="card border-0
+                            shadow-sm rounded-4">
+
+                    <div class="card-body
+                                text-center py-5">
+
+                        <i class="fas fa-box-open
+                                  fa-3x text-muted
+                                  opacity-25 mb-3"></i>
+
+                        <h5 class="fw-bold">
+
+                            No products found
+
+                        </h5>
+
+                        <p class="text-muted mb-3">
+
+                            Try changing your search
+                            or filters.
+
+                        </p>
+
+                        <a asp-action="Index"
+                           class="btn btn-outline-primary
+                                  rounded-pill px-4">
+
+                            <i class="fas fa-rotate-left me-1"></i>
+
+                            Clear Filters
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+
+    <!-- =====================================================
+         PAGINATION
+    ====================================================== -->
+
+    @if (totalPages > 1)
+    {
+        <nav class="mt-5"
+             aria-label="Product pagination">
+
+            <ul class="pagination
+                       justify-content-center
+                       flex-wrap">
+
+
+                <!-- PREVIOUS -->
+
+                <li class="page-item
+                           @(currentPage == 1 ? "disabled" : "")">
+
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-searchString="@searchString"
+                       asp-route-categoryId="@selectedCategory"
+                       asp-route-brandId="@selectedBrand"
+                       asp-route-minPrice="@minPrice"
+                       asp-route-maxPrice="@maxPrice"
+                       asp-route-stockStatus="@stockStatus"
+                       asp-route-sortOrder="@sortOrder"
+                       asp-route-status="@status"
+                       asp-route-pageNumber="@(currentPage - 1)">
+
+                        Previous
+
+                    </a>
+
+                </li>
+
+
+                <!-- PAGE NUMBERS -->
+
+                @for (
+                    int pageNumber = 1;
+                    pageNumber <= totalPages;
+                    pageNumber++)
+                {
+                    <li class="page-item
+                               @(pageNumber == currentPage
+                                   ? "active"
+                                   : "")">
+
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-searchString="@searchString"
+                           asp-route-categoryId="@selectedCategory"
+                           asp-route-brandId="@selectedBrand"
+                           asp-route-minPrice="@minPrice"
+                           asp-route-maxPrice="@maxPrice"
+                           asp-route-stockStatus="@stockStatus"
+                           asp-route-sortOrder="@sortOrder"
+                           asp-route-status="@status"
+                           asp-route-pageNumber="@pageNumber">
+
+                            @pageNumber
+
+                        </a>
+
+                    </li>
+                }
+
+
+                <!-- NEXT -->
+
+                <li class="page-item
+                           @(currentPage == totalPages
+                               ? "disabled"
+                               : "")">
+
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-searchString="@searchString"
+                       asp-route-categoryId="@selectedCategory"
+                       asp-route-brandId="@selectedBrand"
+                       asp-route-minPrice="@minPrice"
+                       asp-route-maxPrice="@maxPrice"
+                       asp-route-stockStatus="@stockStatus"
+                       asp-route-sortOrder="@sortOrder"
+                       asp-route-status="@status"
+                       asp-route-pageNumber="@(currentPage + 1)">
+
+                        Next
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </nav>
+    }
+
+</div>
+
+
+<!-- =========================================================
+     PAGE STYLES
+========================================================= -->
+
+<style>
+
+    .product-card {
+        transition: all .25s ease;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, .10) !important;
+    }
+
+    .product-image {
+        object-fit: cover;
+        transition: transform .3s ease;
+    }
+
+    .product-card:hover .product-image {
+        transform: scale(1.03);
+    }
+
+    .product-name {
+        min-height: 48px;
+
+        display: -webkit-box;
+
+        -webkit-line-clamp: 2;
+
+        -webkit-box-orient: vertical;
+
+        overflow: hidden;
+    }
+
+    .form-control,
+    .form-select {
+        min-height: 44px;
+        border-radius: 10px;
+    }
+
+    .input-group .form-control {
+        border-radius: 0 10px 10px 0;
+    }
+
+    .input-group .input-group-text {
+        border-radius: 10px 0 0 10px;
+    }
+
+    .pagination .page-link {
+        border-radius: 8px;
+        margin: 0 3px;
+    }
+
+</style>

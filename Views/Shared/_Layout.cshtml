@@ -1,0 +1,1013 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>
+        @ViewData["Title"] - BDTechMarket
+    </title>
+
+
+    <!-- =========================================================
+         EXTERNAL RESOURCES
+    ========================================================== -->
+
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+
+
+    <!-- =========================================================
+         CUSTOM LAYOUT STYLE
+    ========================================================== -->
+
+    <style>
+
+        :root {
+            --brand-dark: #1a1a1a;
+            --brand-gold: #ffc107;
+            --brand-success: #198754;
+            --brand-blue: #0d6efd;
+            --brand-light: #f4f7f6;
+        }
+
+
+        /* =====================================================
+           BODY
+        ====================================================== */
+
+        body {
+            background-color: var(--brand-light);
+
+            font-family:
+                'Inter',
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            display: flex;
+            flex-direction: column;
+
+            min-height: 100vh;
+        }
+
+
+        /* =====================================================
+           NAVBAR
+        ====================================================== */
+
+        .navbar {
+            background-color: var(--brand-dark) !important;
+
+            border-bottom: 3px solid var(--brand-gold);
+
+            padding: 0.7rem 1rem;
+
+            backdrop-filter: blur(10px);
+        }
+
+
+        .navbar-brand {
+            font-size: 1.6rem;
+
+            letter-spacing: -0.5px;
+
+            transition: all 0.2s ease;
+        }
+
+
+        .navbar-brand:hover {
+            color: #ffffff !important;
+
+            transform: translateY(-1px);
+        }
+
+
+        .nav-link {
+            font-size: 0.95rem;
+
+            transition:
+                color 0.2s ease,
+                transform 0.2s ease;
+        }
+
+
+        .nav-link:hover {
+            color: var(--brand-gold) !important;
+
+            transform: translateY(-1px);
+        }
+
+
+        /* =====================================================
+           CART BADGE
+        ====================================================== */
+
+        .cart-badge {
+            font-size: 0.65rem;
+
+            vertical-align: top;
+
+            margin-left: -5px;
+        }
+
+
+        /* =====================================================
+           MAIN CONTENT
+        ====================================================== */
+
+        .container-main {
+            flex: 1;
+        }
+
+
+        /* =====================================================
+           AUTH BUTTONS
+        ====================================================== */
+
+        .btn-auth {
+            padding: 0.4rem 1.2rem;
+
+            border-radius: 50px;
+
+            font-weight: 600;
+
+            font-size: 0.85rem;
+        }
+
+
+        /* =====================================================
+           DROPDOWN
+        ====================================================== */
+
+        .dropdown-menu {
+            border-radius: 12px;
+
+            overflow: hidden;
+        }
+
+
+        .dropdown-item {
+            transition:
+                background-color 0.2s ease,
+                color 0.2s ease;
+        }
+
+
+        .dropdown-item:hover {
+            background-color: rgba(255, 193, 7, 0.12);
+
+            color: #212529;
+        }
+
+
+        /* =====================================================
+           FLASH MESSAGES
+        ====================================================== */
+
+        .flash-message {
+            border-radius: 12px;
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ====================================================== */
+
+        .footer-dark {
+            background:
+                linear-gradient(
+                    180deg,
+                    #1a1a1a 0%,
+                    #000000 100%
+                );
+
+            color: #ffffff;
+
+            padding: 60px 0 20px;
+
+            margin-top: 80px;
+        }
+
+
+        .footer-link {
+            color: #adb5bd;
+
+            text-decoration: none;
+
+            transition:
+                color 0.2s ease,
+                padding-left 0.2s ease;
+        }
+
+
+        .footer-link:hover {
+            color: var(--brand-gold);
+
+            padding-left: 3px;
+        }
+
+
+        /* =====================================================
+           SOCIAL ICONS
+        ====================================================== */
+
+        .social-icons a {
+            color: #ffffff;
+
+            margin-right: 15px;
+
+            font-size: 1.2rem;
+
+            transition:
+                color 0.3s ease,
+                transform 0.3s ease;
+        }
+
+
+        .social-icons a:hover {
+            color: var(--brand-gold);
+
+            transform: translateY(-2px);
+        }
+
+
+        /* =====================================================
+           NEWSLETTER INPUT
+        ====================================================== */
+
+        .newsletter-input {
+            background-color: #212529;
+
+            border-color: #495057;
+
+            color: #ffffff;
+        }
+
+
+        .newsletter-input::placeholder {
+            color: #adb5bd;
+        }
+
+
+        .newsletter-input:focus {
+            background-color: #212529;
+
+            color: #ffffff;
+
+            border-color: var(--brand-gold);
+
+            box-shadow:
+                0 0 0 0.2rem rgba(255, 193, 7, 0.15);
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ====================================================== */
+
+        @@media (max-width: 991.98px) {
+
+            .navbar-nav {
+                padding-top: 0.5rem;
+            }
+
+
+            .navbar-nav .nav-item {
+                margin-bottom: 0.25rem;
+            }
+
+
+            .navbar-nav.align-items-center {
+                align-items: stretch !important;
+            }
+
+
+            .btn-auth {
+                display: inline-block;
+            }
+
+
+            .navbar .dropdown-menu {
+                margin-top: 0.5rem;
+            }
+
+        }
+
+
+        @@media (max-width: 575.98px) {
+
+            .navbar-brand {
+                font-size: 1.3rem;
+            }
+
+
+            .footer-dark {
+                padding-top: 45px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================================
+         HEADER / NAVBAR
+    ========================================================== -->
+
+    <header>
+
+        <nav class="navbar navbar-expand-lg navbar-dark shadow-lg sticky-top">
+
+            <div class="container">
+
+
+                <!-- =================================================
+                     BRAND
+                ================================================== -->
+
+                <a class="navbar-brand fw-bold text-warning"
+                   asp-area=""
+                   asp-controller="Home"
+                   asp-action="Index">
+
+                    <i class="fas fa-bolt me-2 animate__animated animate__pulse animate__infinite"></i>
+
+                    BDTechMarket
+
+                </a>
+
+
+                <!-- =================================================
+                     MOBILE NAVBAR BUTTON
+                ================================================== -->
+
+                <button class="navbar-toggler border-0"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarMain"
+                        aria-controls="navbarMain"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+
+                    <span class="navbar-toggler-icon"></span>
+
+                </button>
+
+
+                <!-- =================================================
+                     NAVIGATION
+                ================================================== -->
+
+                <div class="collapse navbar-collapse"
+                     id="navbarMain">
+
+
+                    <!-- =================================================
+                         LEFT SIDE
+                    ================================================== -->
+
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+
+                        <!-- HOME -->
+
+                        <li class="nav-item">
+
+                            <a class="nav-link text-white px-3"
+                               asp-controller="Home"
+                               asp-action="Index">
+
+                                Home
+
+                            </a>
+
+                        </li>
+
+
+                        <!-- PRODUCTS -->
+
+                        <li class="nav-item">
+
+                            <a class="nav-link text-white px-3"
+                               asp-controller="Product"
+                               asp-action="Index">
+
+                                Products
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+
+                    <!-- =================================================
+                         RIGHT SIDE
+                    ================================================== -->
+
+                    <ul class="navbar-nav align-items-center">
+
+
+                        @if (User.Identity != null &&
+                             User.Identity.IsAuthenticated)
+                        {
+
+
+                            <!-- =================================================
+                                 CART - CUSTOMER ONLY
+                            ================================================== -->
+
+                            @if (!User.IsInRole("Admin"))
+                            {
+
+                                <li class="nav-item me-3">
+
+                                    <a class="nav-link text-white position-relative"
+                                       asp-controller="Cart"
+                                       asp-action="Index"
+                                       title="Shopping Cart">
+
+                                        <i class="fas fa-shopping-basket fs-5"></i>
+
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge">
+
+                                            0
+
+                                        </span>
+
+                                    </a>
+
+                                </li>
+
+                            }
+
+
+                            <!-- =================================================
+                                 ADMIN BUTTON
+                            ================================================== -->
+
+                            @if (User.IsInRole("Admin"))
+                            {
+
+                                <li class="nav-item me-2">
+
+                                    <a class="btn btn-outline-warning btn-auth me-2"
+                                       asp-controller="Admin"
+                                       asp-action="Index">
+
+                                        <i class="fas fa-user-shield me-1"></i>
+
+                                        Admin
+
+                                    </a>
+
+                                </li>
+
+                            }
+
+
+                            <!-- =================================================
+                                 USER DROPDOWN
+                            ================================================== -->
+
+                            <li class="nav-item dropdown">
+
+                                <a class="nav-link dropdown-toggle text-light"
+                                   href="#"
+                                   id="userDropdown"
+                                   role="button"
+                                   data-bs-toggle="dropdown"
+                                   aria-expanded="false">
+
+                                    <i class="fas fa-user-circle me-1 text-warning"></i>
+
+                                    @User.Identity.Name
+
+                                </a>
+
+
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+
+
+                                    <!-- MY ORDERS -->
+
+                                    <li>
+
+                                        <a class="dropdown-item"
+                                           asp-controller="Order"
+                                           asp-action="MyOrders">
+
+                                            <i class="fas fa-list me-2"></i>
+
+                                            My Orders
+
+                                        </a>
+
+                                    </li>
+
+
+                                    <li>
+                                        <hr class="dropdown-divider" />
+                                    </li>
+
+
+                                    <!-- LOGOUT -->
+
+                                    <li>
+
+                                        <form asp-controller="Account"
+                                              asp-action="Logout"
+                                              method="post"
+                                              class="px-3">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-danger w-100 rounded-pill">
+
+                                                <i class="fas fa-sign-out-alt me-1"></i>
+
+                                                Logout
+
+                                            </button>
+
+                                        </form>
+
+                                    </li>
+
+                                </ul>
+
+                            </li>
+
+                        }
+
+                        else
+                        {
+
+
+                            <!-- =================================================
+                                 LOGIN
+                            ================================================== -->
+
+                            <li class="nav-item">
+
+                                <a class="btn btn-outline-light btn-auth me-2"
+                                   asp-controller="Account"
+                                   asp-action="Login">
+
+                                    Login
+
+                                </a>
+
+                            </li>
+
+
+                            <!-- =================================================
+                                 REGISTER
+                            ================================================== -->
+
+                            <li class="nav-item">
+
+                                <a class="btn btn-warning btn-auth text-dark"
+                                   asp-controller="Account"
+                                   asp-action="Register">
+
+                                    Join Free
+
+                                </a>
+
+                            </li>
+
+                        }
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+    ========================================================== -->
+
+    <div class="container container-main mt-4">
+
+
+        <!-- =====================================================
+             SUCCESS MESSAGE
+        ====================================================== -->
+
+        @if (TempData["Success"] != null)
+        {
+
+            <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm flash-message animate__animated animate__fadeInDown"
+                 role="alert">
+
+                <i class="fas fa-check-circle me-2"></i>
+
+                @TempData["Success"]
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Close">
+                </button>
+
+            </div>
+
+        }
+
+
+        <!-- =====================================================
+             ERROR MESSAGE
+        ====================================================== -->
+
+        @if (TempData["Error"] != null)
+        {
+
+            <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm flash-message animate__animated animate__fadeInDown"
+                 role="alert">
+
+                <i class="fas fa-exclamation-circle me-2"></i>
+
+                @TempData["Error"]
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Close">
+                </button>
+
+            </div>
+
+        }
+
+
+        <!-- =====================================================
+             INFO MESSAGE
+        ====================================================== -->
+
+        @if (TempData["Info"] != null)
+        {
+
+            <div class="alert alert-info alert-dismissible fade show border-0 shadow-sm flash-message animate__animated animate__fadeInDown"
+                 role="alert">
+
+                <i class="fas fa-info-circle me-2"></i>
+
+                @TempData["Info"]
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Close">
+                </button>
+
+            </div>
+
+        }
+
+
+        <!-- =====================================================
+             PAGE CONTENT
+        ====================================================== -->
+
+        <main role="main"
+              class="pb-5">
+
+            @RenderBody()
+
+        </main>
+
+    </div>
+
+
+    <!-- =========================================================
+         FOOTER
+    ========================================================== -->
+
+    <footer class="footer-dark">
+
+        <div class="container">
+
+            <div class="row g-4">
+
+
+                <!-- =================================================
+                     ABOUT
+                ================================================== -->
+
+                <div class="col-lg-4 col-md-6">
+
+                    <h5 class="text-warning fw-bold mb-3">
+
+                        BDTechMarket
+
+                    </h5>
+
+
+                    <p class="small text-muted mb-4">
+
+                        Bangladesh's trusted gadget marketplace.
+                        Delivering quality technology to your doorstep.
+
+                    </p>
+
+
+                    <!-- SOCIAL ICONS -->
+
+                    <div class="social-icons">
+
+                        <a href="#"
+                           aria-label="Facebook">
+
+                            <i class="fab fa-facebook-f"></i>
+
+                        </a>
+
+
+                        <a href="#"
+                           aria-label="Twitter">
+
+                            <i class="fab fa-twitter"></i>
+
+                        </a>
+
+
+                        <a href="#"
+                           aria-label="Instagram">
+
+                            <i class="fab fa-instagram"></i>
+
+                        </a>
+
+
+                        <a href="#"
+                           aria-label="LinkedIn">
+
+                            <i class="fab fa-linkedin-in"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     QUICK LINKS
+                ================================================== -->
+
+                <div class="col-lg-2 col-md-6">
+
+                    <h6 class="text-white fw-bold mb-3">
+
+                        Quick Links
+
+                    </h6>
+
+
+                    <ul class="list-unstyled small">
+
+
+                        <!-- PRODUCTS -->
+
+                        <li class="mb-2">
+
+                            <a asp-controller="Product"
+                               asp-action="Index"
+                               class="footer-link">
+
+                                Latest Gadgets
+
+                            </a>
+
+                        </li>
+
+
+                        <!-- PRIVACY -->
+
+                        <li class="mb-2">
+
+                            <a asp-controller="Home"
+                               asp-action="Privacy"
+                               class="footer-link">
+
+                                Privacy Policy
+
+                            </a>
+
+                        </li>
+
+
+                        <!-- REFUND -->
+
+                        <li class="mb-2">
+
+                            <a href="#"
+                               class="footer-link">
+
+                                Refund Policy
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </div>
+
+
+                <!-- =================================================
+                     SUPPORT
+                ================================================== -->
+
+                <div class="col-lg-3 col-md-6">
+
+                    <h6 class="text-white fw-bold mb-3">
+
+                        Support
+
+                    </h6>
+
+
+                    <ul class="list-unstyled small">
+
+
+                        <li class="mb-2">
+
+                            <a href="#"
+                               class="footer-link">
+
+                                Order Tracking
+
+                            </a>
+
+                        </li>
+
+
+                        <li class="mb-2">
+
+                            <a href="#"
+                               class="footer-link">
+
+                                Shipping Info
+
+                            </a>
+
+                        </li>
+
+
+                        <li class="mb-2">
+
+                            <a href="#"
+                               class="footer-link">
+
+                                FAQ
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </div>
+
+
+                <!-- =================================================
+                     NEWSLETTER
+                ================================================== -->
+
+                <div class="col-lg-3 col-md-6">
+
+                    <h6 class="text-white fw-bold mb-3">
+
+                        Newsletter
+
+                    </h6>
+
+
+                    <p class="small text-muted">
+
+                        Get updates on new stock and sales.
+
+                    </p>
+
+
+                    <div class="input-group mb-3">
+
+                        <input type="email"
+                               class="form-control form-control-sm newsletter-input"
+                               placeholder="Email address"
+                               aria-label="Email address" />
+
+                        <button class="btn btn-warning btn-sm"
+                                type="button">
+
+                            Go
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================================
+                 FOOTER BOTTOM
+            ====================================================== -->
+
+            <hr class="border-secondary my-4" />
+
+
+            <div class="row align-items-center">
+
+
+                <!-- COPYRIGHT -->
+
+                <div class="col-md-6 text-center text-md-start">
+
+                    <p class="text-muted small mb-0">
+
+                        &copy; @DateTime.Now.Year - BDTechMarket.
+
+                        Built with
+
+                        <i class="fas fa-heart text-danger"></i>
+
+                        in Bangladesh.
+
+                    </p>
+
+                </div>
+
+
+                <!-- PAYMENT METHODS -->
+
+                <div class="col-md-6 text-center text-md-end mt-2 mt-md-0">
+
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg"
+                         height="20"
+                         class="me-3 opacity-50"
+                         alt="PayPal" />
+
+                    <i class="fab fa-cc-visa fa-2x me-3 opacity-50"></i>
+
+                    <i class="fab fa-cc-mastercard fa-2x opacity-50"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+    <!-- =========================================================
+         JAVASCRIPT
+    ========================================================== -->
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/site.js"
+            asp-append-version="true"></script>
+
+    @await RenderSectionAsync(
+        "Scripts",
+        required: false
+    )
+
+</body>
+
+</html>

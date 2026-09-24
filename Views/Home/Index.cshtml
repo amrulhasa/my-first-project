@@ -1,0 +1,161 @@
+﻿@{
+    ViewData["Title"] = "Best Tech Gadget Shop in BD";
+}
+
+<div class="container-fluid p-0 overflow-hidden">
+    @* --- Premium Hero Section --- *@
+    <header class="bg-white py-5 mb-5 shadow-sm hero-gradient">
+        <div class="container">
+            <div class="row align-items-center" style="min-height: 70vh;">
+                @* Welcome Text Section *@
+                <div class="col-lg-7 text-start">
+                    <div class="animate__animated animate__fadeInLeft">
+                        <span class="badge bg-primary-soft text-primary text-uppercase px-3 py-2 mb-3 fw-bold" style="letter-spacing: 2px;">
+                            Official Tech Partner
+                        </span>
+                        <h1 class="display-2 fw-bold text-dark mb-4" style="line-height: 1.1;">
+                            Welcome to <br />
+                            <span class="text-warning text-gradient-gold">BDTechMarket</span>
+                        </h1>
+                        <p class="lead text-muted mb-5 pe-lg-5">
+                            Discover high-performance laptops, flagship smartphones, and premium accessories. 
+                            Authorized reseller with <strong>Official Warranty</strong> and island-wide delivery.
+                        </p>
+                        <div class="d-flex flex-wrap gap-3">
+                            <a asp-controller="Home" asp-action="Products" class="btn btn-warning btn-lg px-5 rounded-pill fw-bold shadow-sm transition-hover">
+                                <i class="fas fa-shopping-cart me-2"></i> Browse Gadgets
+                            </a>
+                            @if (!(User.Identity?.IsAuthenticated ?? false))
+                            {
+                                <a asp-controller="Account" asp-action="Login" class="btn btn-outline-dark btn-lg px-5 rounded-pill transition-hover">
+                                    Sign In
+                                </a>
+                            }
+                            else
+                            {
+                                <a asp-controller="Order" asp-action="MyOrders" class="btn btn-outline-dark btn-lg px-5 rounded-pill transition-hover">
+                                    <i class="fas fa-box me-2"></i> My Orders
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                @* Hero Image Section *@
+                <div class="col-lg-5 text-center d-none d-lg-block">
+                    <div class="hero-icon-wrapper animate__animated animate__zoomIn">
+                        <div class="blob-bg">
+                            <i class="fas fa-laptop-code text-warning opacity-75" style="font-size: 15rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    @* --- Trust & Features Section --- *@
+    <section class="container pb-5">
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100 feature-card">
+                    <div class="icon-box bg-primary-soft text-primary mx-auto mb-3">
+                        <i class="fas fa-truck-fast fa-2x"></i>
+                    </div>
+                    <h5 class="fw-bold">Fastest Delivery</h5>
+                    <p class="text-muted small mb-0">Priority shipping within 24 hours inside Dhaka and 48 hours nationwide.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100 feature-card">
+                    <div class="icon-box bg-success-soft text-success mx-auto mb-3">
+                        <i class="fas fa-shield-check fa-2x"></i>
+                    </div>
+                    <h5 class="fw-bold">100% Authentic</h5>
+                    <p class="text-muted small mb-0">Directly imported from manufacturers. Guaranteed original serial numbers.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100 feature-card">
+                    <div class="icon-box bg-warning-soft text-warning mx-auto mb-3">
+                        <i class="fas fa-headset fa-2x"></i>
+                    </div>
+                    <h5 class="fw-bold">Expert Support</h5>
+                    <p class="text-muted small mb-0">Our certified tech enthusiasts are ready to assist you via Live Chat or Phone.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @* --- Contact & About Section --- *@
+    <footer class="bg-light py-5 mt-5 border-top">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-md-4">
+                    <h5 class="fw-bold mb-4 text-dark border-start border-warning border-4 ps-3">Who We Are</h5>
+                    <p class="text-muted small">BDTechMarket is Bangladesh's most trusted digital marketplace. Since 2020, we've helped over 50k customers find the perfect tech for their lifestyle.</p>
+                    <div class="social-links d-flex gap-3 mt-3">
+                        <a href="#" class="text-primary"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="#" class="text-info"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="text-danger"><i class="fab fa-instagram fa-lg"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="fw-bold mb-4 text-dark border-start border-warning border-4 ps-3">Find Us</h5>
+                    <ul class="list-unstyled text-muted small">
+                        <li class="mb-3 d-flex"><i class="fas fa-map-marker-alt text-warning me-3 mt-1"></i> Level 4, Multiplan Center, Elephant Road, Dhaka</li>
+                        <li class="mb-3"><i class="fas fa-phone-alt text-warning me-3"></i> +880 1711-000000</li>
+                        <li class="mb-3"><i class="fas fa-envelope text-warning me-3"></i> support@bdtechmarket.com</li>
+                    </ul>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <h5 class="fw-bold mb-4 text-dark border-start border-warning border-4 ps-3 text-start">Operation</h5>
+                    <p class="text-muted small mb-1">Sat - Thu: 10:00 AM - 08:00 PM</p>
+                    <p class="text-danger small fw-bold">Friday: Closed for Maintenance</p>
+                    <div class="mt-4">
+                        <img src="/images/payment-methods.png" alt="Payment Methods" class="img-fluid opacity-50" style="max-height: 40px;">
+                    </div>
+                </div>
+            </div>
+            <hr class="my-5 opacity-10">
+            <div class="text-center text-muted small">
+                &copy; @DateTime.Now.Year BDTechMarket. All rights reserved.
+            </div>
+        </div>
+    </footer>
+</div>
+
+<style>
+    .hero-gradient { background: linear-gradient(135deg, #ffffff 0%, #f1f3f5 100%); }
+    
+    .bg-primary-soft { background-color: rgba(13, 110, 253, 0.1); }
+    .bg-success-soft { background-color: rgba(25, 135, 84, 0.1); }
+    .bg-warning-soft { background-color: rgba(255, 193, 7, 0.1); }
+
+    .text-gradient-gold {
+        background: linear-gradient(90deg, #ffc107, #ff9800);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .feature-card {
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .feature-card:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,0.08) !important;
+    }
+
+    .hero-icon-wrapper { animation: float 6s ease-in-out infinite; }
+    @@keyframes float {
+        0% { transform: translatey(0px); }
+        50% { transform: translatey(-20px); }
+        100% { transform: translatey(0px); }
+    }
+
+    .blob-bg {
+        background: rgba(255, 193, 7, 0.05);
+        border-radius: 50%;
+        padding: 50px;
+        display: inline-block;
+    }
+</style>

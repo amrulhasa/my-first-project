@@ -1,0 +1,68 @@
+@model BDTechMarket.Models.Order
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<div class="container my-5">
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-header bg-dark text-white p-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Order #@Model.Id</h4>
+                <span class="badge bg-warning text-dark">@Model.OrderStatus</span>
+            </div>
+        </div>
+        <div class="card-body p-4">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h6 class="fw-bold text-muted text-uppercase small">Shipping Address</h6>
+                    <p class="mb-1 fw-bold">@Model.FullName</p>
+                    <p class="mb-1 text-secondary">@Model.Address</p>
+                    <p class="text-secondary">Phone: @Model.Phone</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <h6 class="fw-bold text-muted text-uppercase small">Payment Details</h6>
+                    <p class="mb-1">Method: <strong>@Model.PaymentMethod</strong></p>
+                    <p class="mb-1">TrxID: <span class="text-primary">@(Model.TransactionId ?? "N/A")</span></p>
+                    <p>Status: <span class="badge bg-info">@Model.PaymentStatus</span></p>
+                </div>
+            </div>
+
+            <table class="table align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Product</th>
+                        <th class="text-center">Price</th>
+                        <th class="text-center">Qty</th>
+                        <th class="text-end">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.OrderDetails)
+                    {
+                        <tr>
+                            <td><div class="fw-bold">@item.Product?.Name</div></td>
+                            <td class="text-center">৳ @item.Price.ToString("N0")</td>
+                            <td class="text-center">@item.Count</td>
+                            <td class="text-end fw-bold">৳ @((item.Count * item.Price).ToString("N0"))</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-end text-muted">Subtotal</td>
+                        @* Subtotal = OrderTotal - DeliveryFee *@
+                        <td class="text-end fw-bold">৳ @((Model.OrderTotal - Model.DeliveryFee).ToString("N0"))</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="text-end text-muted">Delivery Fee</td>
+                        <td class="text-end fw-bold text-success">৳ @Model.DeliveryFee.ToString("N0")</td>
+                    </tr>
+                    <tr class="table-dark">
+                        <td colspan="3" class="text-end fw-bold">Grand Total</td>
+                        <td class="text-end fw-bold">৳ @Model.OrderTotal.ToString("N0")</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>

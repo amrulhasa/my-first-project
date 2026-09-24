@@ -1,0 +1,172 @@
+@model BDTechMarket.Models.Order
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice - #@Model.Id.ToString("D5")</title>
+    
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <style>
+        body { background-color: #f0f2f5; font-family: 'Inter', 'Segoe UI', sans-serif; }
+        
+        /* Typography & Layout */
+        .brand-logo { color: #ffc107; font-size: 28px; font-weight: 800; letter-spacing: -1px; }
+        .invoice-wrapper { 
+            max-width: 850px; margin: 40px auto; background: #fff; padding: 40px; 
+            border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
+        }
+
+        /* Status Badges */
+        .status-header {
+            padding: 8px 16px; border-radius: 6px; font-weight: 700; text-transform: uppercase; font-size: 12px;
+        }
+        .status-paid { background-color: #d1e7dd; color: #0f5132; }
+        .status-unpaid { background-color: #f8d7da; color: #842029; }
+
+        /* Print Logic Optimization */
+        /* Note: Double @@ is used to escape Razor engine */
+        @@media print {
+            body { background: white !important; }
+            .no-print { display: none !important; }
+            .invoice-wrapper { margin: 0; padding: 10px; box-shadow: none; width: 100%; max-width: 100%; }
+            .brand-logo { color: #000 !important; }
+            .table-dark { background-color: #212529 !important; color: white !important; -webkit-print-color-adjust: exact; }
+            .status-paid { border: 1px solid #0f5132; -webkit-print-color-adjust: exact; }
+        }
+
+        .extra-small { font-size: 10px; color: #6c757d; }
+    </style>
+</head>
+<body>
+
+    @* Control Toolbar *@
+    <div class="container text-center no-print my-4">
+        <div class="btn-group shadow-sm bg-white p-2 rounded-pill">
+            <button onclick="window.print()" class="btn btn-dark rounded-pill px-4 me-2">
+                <i class="fas fa-print me-2"></i> Print Invoice
+            </button>
+            <a asp-controller="Order" asp-action="MyOrders" class="btn btn-outline-secondary rounded-pill px-4">
+                <i class="fas fa-list me-2"></i> My Orders
+            </a>
+        </div>
+    </div>
+
+    <div class="invoice-wrapper">
+        @* Header Section *@
+        <div class="row align-items-center mb-4 pb-4 border-bottom">
+            <div class="col-6">
+                <div class="brand-logo mb-1">BDTechMarket</div>
+                <div class="extra-small text-uppercase fw-bold text-muted mb-2">Technology Solutions Provider</div>
+                <p class="small text-secondary mb-0">Multiplan Center, Level 10, Dhaka</p>
+                <p class="small text-secondary">BIN: 001234567-0101</p>
+            </div>
+            <div class="col-6 text-end">
+                <div class="mb-2">
+                    @if(Model.PaymentStatus == "Success" || Model.PaymentStatus == "Paid") {
+                        <span class="status-header status-paid"><i class="fas fa-check-circle me-1"></i> Full Paid</span>
+                    } else {
+                        <span class="status-header status-unpaid"><i class="fas fa-exclamation-triangle me-1"></i> @Model.PaymentStatus</span>
+                    }
+                </div>
+                <h4 class="fw-bold mb-0">INVOICE</h4>
+                <div class="text-primary fw-bold small">#ORD-@Model.Id.ToString("D5")</div>
+                <div class="text-muted extra-small">DATE: @Model.OrderDate.ToString("dd-MMM-yyyy")</div>
+            </div>
+        </div>
+
+        @* Stakeholders *@
+        <div class="row mb-5">
+            <div class="col-6">
+                <div class="text-muted extra-small text-uppercase fw-bold mb-2">Customer Info</div>
+                <h6 class="fw-bold mb-1">@Model.FullName</h6>
+                <p class="small text-secondary mb-1"><i class="fas fa-phone-alt me-2"></i>@Model.Phone</p>
+                <p class="small text-secondary"><i class="fas fa-map-marker-alt me-2"></i>@Model.Address</p>
+            </div>
+            <div class="col-6 text-end">
+                <div class="text-muted extra-small text-uppercase fw-bold mb-2">Transaction Summary</div>
+                <p class="small mb-1"><strong>Method:</strong> @(Model.PaymentMethod ?? "COD")</p>
+                <p class="small mb-1"><strong>Gateway:</strong> @(Model.TransactionId ?? "N/A")</p>
+                <p class="small mb-0 text-uppercase fw-bold text-primary">Status: @Model.OrderStatus</p>
+            </div>
+        </div>
+
+        @* Items Table *@
+        <table class="table mb-4">
+            <thead class="table-dark">
+                <tr>
+                    <th class="ps-3 py-3">Description</th>
+                    <th class="text-center py-3">Unit Price</th>
+                    <th class="text-center py-3">Qty</th>
+                    <th class="text-end pe-3 py-3">Sub-Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if(Model.OrderDetails != null)
+                {
+                    @foreach (var item in Model.OrderDetails)
+                    {
+                        <tr class="align-middle">
+                            <td class="ps-3">
+                                <div class="fw-bold small">@item.Product?.Name</div>
+                                <div class="extra-small text-muted">Warranty: 12 Months Official</div>
+                            </td>
+                            <td class="text-center small">@item.Price.ToString("N0") ৳</td>
+                            <td class="text-center small">@item.Count</td>
+                            <td class="text-end pe-3 fw-bold small">@((item.Count * item.Price).ToString("N0")) ৳</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+        @* Summary & Totals *@
+        <div class="row">
+            <div class="col-7">
+                <div class="p-3 border rounded small text-muted bg-light">
+                    <div class="fw-bold text-dark mb-1 small"><i class="fas fa-info-circle me-1"></i> Terms & Conditions</div>
+                    <ul class="mb-0 ps-3 extra-small">
+                        <li>Original invoice is mandatory for any warranty claim.</li>
+                        <li>No returns accepted on open-box electronic items.</li>
+                        <li>Delivery charges are non-refundable.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-5">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted small">Cart Subtotal:</span>
+                    <span class="small fw-bold">@((Model.OrderTotal).ToString("N0")) ৳</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2 border-bottom pb-2">
+                    <span class="text-muted small">Delivery Charge:</span>
+                    <span class="small fw-bold">+ @Model.DeliveryFee.ToString("N0") ৳</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="h6 fw-bold">Total Amount:</span>
+                    <span class="h5 fw-bold text-primary">@((Model.OrderTotal + Model.DeliveryFee).ToString("N0")) ৳</span>
+                </div>
+            </div>
+        </div>
+
+        @* Footer *@
+        <div class="row mt-5 pt-5 text-center border-top">
+            <div class="col-4">
+                <div class="border-top pt-2 extra-small text-muted">Customer's Signature</div>
+            </div>
+            <div class="col-4">
+                <div class="extra-small text-muted">Generated by BDTechMarket System</div>
+            </div>
+            <div class="col-4">
+                <div class="border-top pt-2 extra-small text-muted fw-bold">Authorized Signature</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

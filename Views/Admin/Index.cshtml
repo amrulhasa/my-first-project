@@ -1,0 +1,57 @@
+@model IEnumerable<BDTechMarket.Models.Order>
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    var totalOrders = ViewBag.TotalOrders ?? 0;
+    var totalRevenue = ViewBag.TotalRevenue ?? 0m;
+    var pendingOrders = ViewBag.PendingOrders ?? 0;
+    var deliveredOrders = ViewBag.DeliveredOrders ?? 0;
+}
+
+<div class="container mt-4 mb-5">
+    @* Dashboard Header *@
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-8">
+            <h2 class="fw-bold text-dark border-start border-5 border-primary ps-3 mb-1">
+                <i class="fas fa-chart-line text-primary me-2"></i> Business Overview
+            </h2>
+        </div>
+    </div>
+
+    @* Statistics Cards *@
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 dashboard-card bg-primary text-white">
+                <div class="card-body p-4">
+                    <h6 class="text-uppercase small opacity-75">Total Orders</h6>
+                    <h2 class="display-6 fw-bold">@totalOrders</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 dashboard-card bg-success text-white">
+                <div class="card-body p-4">
+                    <h6 class="text-uppercase small opacity-75">Total Revenue</h6>
+                    <h2 class="h3 fw-bold">@totalRevenue.ToString("N0") BDT</h2>
+                </div>
+            </div>
+        </div>
+        @* Add Pending and Delivered cards here similarly *@
+    </div>
+
+    @* Quick Actions - Fixed Routing *@
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm rounded-4 bg-white p-4">
+                <h5 class="fw-bold mb-4 border-bottom pb-3">Quick Actions</h5>
+                <div class="d-flex flex-wrap gap-3">
+                    <a asp-controller="Admin" asp-action="AdminOrders" class="btn btn-primary rounded-pill px-4">
+                        <i class="fas fa-tasks me-2"></i> Manage Orders
+                    </a>
+                    <a asp-controller="Admin" asp-action="SalesSummary" class="btn btn-info text-white rounded-pill px-4">
+                        <i class="fas fa-file-invoice-dollar me-2"></i> Sales Summary
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,1386 @@
+@model BDTechMarket.Models.Product
+
+@{
+    ViewData["Title"] = Model.Name + " | BDTechMarket";
+
+    var hasStock = Model.StockQuantity > 0;
+
+    var isLowStock =
+        Model.StockQuantity > 0 &&
+        Model.StockQuantity <= 5;
+
+    var relatedProducts =
+        ViewBag.RelatedProducts
+        as List<BDTechMarket.Models.Product>
+        ?? new List<BDTechMarket.Models.Product>();
+}
+
+<div class="container py-5">
+
+    <!-- =====================================================
+         BREADCRUMB
+    ====================================================== -->
+
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+
+            <li class="breadcrumb-item">
+                <a asp-controller="Home"
+                   asp-action="Index"
+                   class="text-decoration-none">
+
+                    <i class="fas fa-home me-1"></i>
+                    Home
+
+                </a>
+            </li>
+
+            <li class="breadcrumb-item">
+                <a asp-controller="Product"
+                   asp-action="Index"
+                   class="text-decoration-none">
+
+                    Products
+
+                </a>
+            </li>
+
+            @if (Model.Category != null)
+            {
+                <li class="breadcrumb-item">
+
+                    <span>
+                        @Model.Category.Name
+                    </span>
+
+                </li>
+            }
+
+            <li class="breadcrumb-item active"
+                aria-current="page">
+
+                @Model.Name
+
+            </li>
+
+        </ol>
+    </nav>
+
+
+    <!-- =====================================================
+         MAIN PRODUCT CARD
+    ====================================================== -->
+
+    <div class="card border-0 shadow-sm product-details-card">
+
+        <div class="row g-0">
+
+            <!-- =================================================
+                 PRODUCT IMAGE
+            ================================================== -->
+
+            <div class="col-lg-6">
+
+                <div class="product-gallery">
+
+                    @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+                    {
+                        <div class="image-wrapper">
+
+                            <img src="@Url.Content(Model.ImageUrl)"
+                                 id="mainProductImage"
+                                 class="product-main-image"
+                                 alt="@Model.Name" />
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="no-image">
+
+                            <i class="fas fa-image fa-4x mb-3"></i>
+
+                            <h5 class="mb-1">
+                                Image Coming Soon
+                            </h5>
+
+                            <small>
+                                Product image is not available
+                            </small>
+
+                        </div>
+                    }
+
+
+                    <!-- Stock Badge -->
+
+                    @if (!hasStock)
+                    {
+                        <span class="gallery-stock-badge out">
+
+                            <i class="fas fa-times-circle me-1"></i>
+                            Out of Stock
+
+                        </span>
+                    }
+                    else if (isLowStock)
+                    {
+                        <span class="gallery-stock-badge low">
+
+                            <i class="fas fa-exclamation-triangle me-1"></i>
+                            Only @Model.StockQuantity left
+
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="gallery-stock-badge available">
+
+                            <i class="fas fa-check-circle me-1"></i>
+                            In Stock
+
+                        </span>
+                    }
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 PRODUCT INFORMATION
+            ================================================== -->
+
+            <div class="col-lg-6">
+
+                <div class="product-info">
+
+
+                    <!-- Category -->
+
+                    @if (Model.Category != null)
+                    {
+                        <div class="mb-3">
+
+                            <span class="category-badge">
+
+                                <i class="fas fa-tag me-1"></i>
+
+                                @Model.Category.Name
+
+                            </span>
+
+                        </div>
+                    }
+
+
+                    <!-- Product Name -->
+
+                    <h1 class="product-title">
+                        @Model.Name
+                    </h1>
+
+
+                    <!-- Brand -->
+
+                    @if (Model.BrandEntity != null)
+                    {
+                        <div class="brand-row">
+
+                            <span class="text-muted">
+                                Brand:
+                            </span>
+
+                            <strong>
+                                @Model.BrandEntity.Name
+                            </strong>
+
+                        </div>
+                    }
+                    else if (!string.IsNullOrWhiteSpace(Model.Brand))
+                    {
+                        <div class="brand-row">
+
+                            <span class="text-muted">
+                                Brand:
+                            </span>
+
+                            <strong>
+                                @Model.Brand
+                            </strong>
+
+                        </div>
+                    }
+
+
+                    <!-- SKU -->
+
+                    @if (!string.IsNullOrWhiteSpace(Model.SKU))
+                    {
+                        <div class="sku-row">
+
+                            <span class="text-muted">
+                                SKU:
+                            </span>
+
+                            <span class="sku-value">
+                                @Model.SKU
+                            </span>
+
+                        </div>
+                    }
+
+
+                    <hr class="my-4" />
+
+
+                    <!-- =================================================
+                         PRICE
+                    ================================================== -->
+
+                    <div class="price-box">
+
+                        <div class="price-label">
+                            Current Price
+                        </div>
+
+                        <div class="price">
+                            ৳@Model.Price.ToString("N2")
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         DESCRIPTION
+                    ================================================== -->
+
+                    <div class="description-section">
+
+                        <h5 class="section-title">
+                            Product Description
+                        </h5>
+
+                        @if (!string.IsNullOrWhiteSpace(Model.Description))
+                        {
+                            <p class="description-text">
+                                @Model.Description
+                            </p>
+                        }
+                        else
+                        {
+                            <p class="text-muted">
+                                No description available for this product.
+                            </p>
+                        }
+
+                    </div>
+
+
+                    <!-- =================================================
+                         PRODUCT SPECIFICATIONS
+                    ================================================== -->
+
+                    @if (Model.Specifications != null &&
+                         Model.Specifications.Any())
+                    {
+                        <div class="specifications-section">
+
+                            <h5 class="section-title">
+
+                                <i class="fas fa-list-check text-primary me-2"></i>
+
+                                Specifications
+
+                            </h5>
+
+                            <div class="specifications-card">
+
+                                <div class="table-responsive">
+
+                                    <table class="table table-hover align-middle mb-0">
+
+                                        <tbody>
+
+                                            @foreach (var specification in
+                                                Model.Specifications
+                                                    .OrderBy(s => s.DisplayOrder)
+                                                    .ThenBy(s => s.Name))
+                                            {
+                                                <tr>
+
+                                                    <th class="specification-name">
+
+                                                        @specification.Name
+
+                                                    </th>
+
+                                                    <td class="specification-value">
+
+                                                        @specification.Value
+
+                                                    </td>
+
+                                                </tr>
+                                            }
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    }
+
+
+                    <!-- =================================================
+                         STOCK STATUS
+                    ================================================== -->
+
+                    <div class="stock-box">
+
+                        @if (!hasStock)
+                        {
+                            <div class="stock-status out">
+
+                                <i class="fas fa-box-open"></i>
+
+                                <div>
+
+                                    <strong>
+                                        Currently Out of Stock
+                                    </strong>
+
+                                    <small>
+                                        This product is currently unavailable.
+                                    </small>
+
+                                </div>
+
+                            </div>
+                        }
+                        else if (isLowStock)
+                        {
+                            <div class="stock-status low">
+
+                                <i class="fas fa-exclamation-triangle"></i>
+
+                                <div>
+
+                                    <strong>
+                                        Low Stock
+                                    </strong>
+
+                                    <small>
+                                        Only @Model.StockQuantity unit(s) remaining.
+                                    </small>
+
+                                </div>
+
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="stock-status available">
+
+                                <i class="fas fa-check-circle"></i>
+
+                                <div>
+
+                                    <strong>
+                                        In Stock
+                                    </strong>
+
+                                    <small>
+                                        @Model.StockQuantity unit(s) available.
+                                    </small>
+
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+
+
+                    <!-- =================================================
+                         ADD TO CART
+                    ================================================== -->
+
+                    @if (hasStock)
+                    {
+                        <form asp-controller="Cart"
+                              asp-action="AddToCart"
+                              method="post"
+                              class="cart-form">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden"
+                                   name="productId"
+                                   value="@Model.Id" />
+
+
+                            <!-- Quantity -->
+
+                            <div class="quantity-area">
+
+                                <label class="form-label fw-semibold">
+                                    Quantity
+                                </label>
+
+                                <div class="quantity-selector">
+
+                                    <button type="button"
+                                            class="quantity-btn"
+                                            onclick="changeQty(-1)">
+                                        −
+                                    </button>
+
+                                    <input type="number"
+                                           name="quantity"
+                                           id="qtyInput"
+                                           value="1"
+                                           min="1"
+                                           max="@Model.StockQuantity"
+                                           readonly />
+
+                                    <button type="button"
+                                            class="quantity-btn"
+                                            onclick="changeQty(1)">
+                                        +
+                                    </button>
+
+                                </div>
+
+                                <small class="text-muted">
+                                    Maximum @Model.StockQuantity unit(s)
+                                </small>
+
+                            </div>
+
+
+                            <!-- Add To Cart Button -->
+
+                            <button type="submit"
+                                    class="btn btn-primary btn-lg add-cart-btn">
+
+                                <i class="fas fa-cart-plus me-2"></i>
+
+                                Add to Cart
+
+                            </button>
+
+                        </form>
+                    }
+                    else
+                    {
+                        <button type="button"
+                                class="btn btn-secondary btn-lg w-100 rounded-pill py-3"
+                                disabled>
+
+                            <i class="fas fa-ban me-2"></i>
+
+                            Out of Stock
+
+                        </button>
+                    }
+
+
+                    <!-- =================================================
+                         ADMIN ACTION
+                    ================================================== -->
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <div class="admin-action">
+
+                            <div class="d-flex gap-2 flex-wrap">
+
+                                <a asp-controller="Product"
+                                   asp-action="Edit"
+                                   asp-route-id="@Model.Id"
+                                   class="btn btn-outline-warning">
+
+                                    <i class="fas fa-edit me-1"></i>
+
+                                    Edit Product
+
+                                </a>
+
+                                <a asp-controller="ProductSpecification"
+                                   asp-action="Index"
+                                   asp-route-productId="@Model.Id"
+                                   class="btn btn-outline-primary">
+
+                                    <i class="fas fa-list-check me-1"></i>
+
+                                    Manage Specifications
+
+                                </a>
+
+                            </div>
+
+                        </div>
+                    }
+
+
+                    <!-- =================================================
+                         TRUST INFORMATION
+                    ================================================== -->
+
+                    <div class="trust-grid">
+
+                        <div class="trust-item">
+
+                            <div class="trust-icon">
+                                <i class="fas fa-truck"></i>
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Delivery
+                                </strong>
+
+                                <small>
+                                    Available at checkout
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="trust-item">
+
+                            <div class="trust-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Secure Purchase
+                                </strong>
+
+                                <small>
+                                    Safe checkout
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="trust-item">
+
+                            <div class="trust-icon">
+                                <i class="fas fa-box"></i>
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Genuine Product
+                                </strong>
+
+                                <small>
+                                    Quality checked
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="trust-item">
+
+                            <div class="trust-icon">
+                                <i class="fas fa-headset"></i>
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Support
+                                </strong>
+
+                                <small>
+                                    Customer assistance
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         RELATED PRODUCTS
+    ====================================================== -->
+
+    @if (relatedProducts.Any())
+    {
+        <section class="related-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="section-kicker">
+                        YOU MAY ALSO LIKE
+                    </span>
+
+                    <h2>
+                        Related Products
+                    </h2>
+
+                </div>
+
+                <a asp-controller="Product"
+                   asp-action="Index"
+                   asp-route-categoryId="@Model.CategoryId"
+                   class="btn btn-outline-primary rounded-pill px-4">
+
+                    View All
+
+                    <i class="fas fa-arrow-right ms-1"></i>
+
+                </a>
+
+            </div>
+
+
+            <div class="row g-4">
+
+                @foreach (var item in relatedProducts)
+                {
+                    <div class="col-12 col-sm-6 col-lg-3">
+
+                        <div class="related-card h-100">
+
+
+                            <!-- Image -->
+
+                            <a asp-controller="Product"
+                               asp-action="Details"
+                               asp-route-id="@item.Id"
+                               class="text-decoration-none">
+
+                                <div class="related-image">
+
+                                    @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                                    {
+                                        <img src="@Url.Content(item.ImageUrl)"
+                                             alt="@item.Name"
+                                             loading="lazy" />
+                                    }
+                                    else
+                                    {
+                                        <div class="related-no-image">
+
+                                            <i class="fas fa-image"></i>
+
+                                        </div>
+                                    }
+
+
+                                    @if (item.StockQuantity <= 0)
+                                    {
+                                        <span class="related-stock out">
+                                            Out of Stock
+                                        </span>
+                                    }
+                                    else if (item.StockQuantity <= 5)
+                                    {
+                                        <span class="related-stock low">
+                                            Low Stock
+                                        </span>
+                                    }
+
+                                </div>
+
+                            </a>
+
+
+                            <!-- Body -->
+
+                            <div class="related-body">
+
+                                @if (item.Category != null)
+                                {
+                                    <small class="text-primary fw-semibold">
+                                        @item.Category.Name
+                                    </small>
+                                }
+
+                                <h5 class="related-title">
+                                    @item.Name
+                                </h5>
+
+                                @if (item.BrandEntity != null)
+                                {
+                                    <div class="related-brand">
+                                        @item.BrandEntity.Name
+                                    </div>
+                                }
+                                else if (!string.IsNullOrWhiteSpace(item.Brand))
+                                {
+                                    <div class="related-brand">
+                                        @item.Brand
+                                    </div>
+                                }
+
+                                <div class="related-footer">
+
+                                    <span class="related-price">
+                                        ৳@item.Price.ToString("N2")
+                                    </span>
+
+                                    <a asp-controller="Product"
+                                       asp-action="Details"
+                                       asp-route-id="@item.Id"
+                                       class="btn btn-sm btn-outline-primary rounded-pill">
+
+                                        View
+
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+        </section>
+    }
+
+</div>
+
+
+<!-- =========================================================
+     STYLES
+========================================================= -->
+
+<style>
+
+    /* =========================================
+       MAIN CARD
+    ========================================== */
+
+    .product-details-card {
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+
+    /* =========================================
+       GALLERY
+    ========================================== */
+
+    .product-gallery {
+        min-height: 620px;
+        background: #f8fafc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 45px;
+        position: relative;
+    }
+
+    .image-wrapper {
+        width: 100%;
+        height: 520px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+        border-radius: 18px;
+        padding: 25px;
+    }
+
+    .product-main-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: transform .3s ease;
+    }
+
+    .product-main-image:hover {
+        transform: scale(1.04);
+    }
+
+    .no-image {
+        width: 100%;
+        height: 520px;
+        background: white;
+        border-radius: 18px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #94a3b8;
+    }
+
+
+    /* =========================================
+       STOCK BADGE
+    ========================================== */
+
+    .gallery-stock-badge {
+        position: absolute;
+        top: 28px;
+        right: 28px;
+        padding: 9px 16px;
+        border-radius: 50px;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .gallery-stock-badge.available {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .gallery-stock-badge.low {
+        background: #fef3c7;
+        color: #b45309;
+    }
+
+    .gallery-stock-badge.out {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+
+    /* =========================================
+       PRODUCT INFO
+    ========================================== */
+
+    .product-info {
+        padding: 50px;
+    }
+
+    .category-badge {
+        display: inline-flex;
+        align-items: center;
+        background: #dbeafe;
+        color: #2563eb;
+        padding: 7px 14px;
+        border-radius: 50px;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .product-title {
+        font-size: clamp(2rem, 4vw, 3rem);
+        line-height: 1.15;
+        font-weight: 800;
+        color: #172033;
+        margin-bottom: 20px;
+    }
+
+    .brand-row,
+    .sku-row {
+        margin-bottom: 8px;
+        font-size: 15px;
+    }
+
+    .sku-value {
+        font-family: monospace;
+        font-weight: 700;
+        margin-left: 4px;
+    }
+
+
+    /* =========================================
+       PRICE
+    ========================================== */
+
+    .price-box {
+        background: #eff6ff;
+        border-left: 5px solid #2563eb;
+        border-radius: 12px;
+        padding: 20px 22px;
+        margin-bottom: 28px;
+    }
+
+    .price-label {
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+
+    .price {
+        color: #2563eb;
+        font-size: 2.3rem;
+        font-weight: 800;
+    }
+
+
+    /* =========================================
+       DESCRIPTION
+    ========================================== */
+
+    .description-section {
+        margin-bottom: 25px;
+    }
+
+    .section-title {
+        font-weight: 800;
+        margin-bottom: 10px;
+    }
+
+    .description-text {
+        color: #64748b;
+        line-height: 1.8;
+        white-space: pre-line;
+        margin-bottom: 0;
+    }
+
+
+    /* =========================================
+       SPECIFICATIONS
+    ========================================== */
+
+    .specifications-section {
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+
+    .specifications-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        overflow: hidden;
+        background: #ffffff;
+    }
+
+    .specifications-card .table {
+        margin-bottom: 0;
+    }
+
+    .specification-name {
+        width: 38%;
+        background: #f8fafc;
+        color: #334155;
+        font-weight: 700;
+        padding: 14px 16px;
+        vertical-align: middle;
+    }
+
+    .specification-value {
+        color: #475569;
+        font-weight: 500;
+        padding: 14px 16px;
+        vertical-align: middle;
+        white-space: pre-line;
+    }
+
+    .specifications-card tr:last-child th,
+    .specifications-card tr:last-child td {
+        border-bottom: 0;
+    }
+
+
+    /* =========================================
+       STOCK
+    ========================================== */
+
+    .stock-box {
+        margin-bottom: 25px;
+    }
+
+    .stock-status {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 15px 17px;
+        border-radius: 12px;
+    }
+
+    .stock-status i {
+        font-size: 22px;
+    }
+
+    .stock-status strong,
+    .stock-status small {
+        display: block;
+    }
+
+    .stock-status small {
+        margin-top: 2px;
+        color: #64748b;
+    }
+
+    .stock-status.available {
+        background: #f0fdf4;
+        color: #15803d;
+    }
+
+    .stock-status.low {
+        background: #fffbeb;
+        color: #b45309;
+    }
+
+    .stock-status.out {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+
+    /* =========================================
+       QUANTITY
+    ========================================== */
+
+    .cart-form {
+        margin-top: 15px;
+    }
+
+    .quantity-area {
+        margin-bottom: 18px;
+    }
+
+    .quantity-selector {
+        width: 170px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        border: 2px solid #dee2e6;
+        border-radius: 50px;
+        overflow: hidden;
+        margin-bottom: 6px;
+    }
+
+    .quantity-btn {
+        width: 50px;
+        height: 100%;
+        border: 0;
+        background: transparent;
+        font-size: 22px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .quantity-btn:hover {
+        background: #f1f5f9;
+    }
+
+    #qtyInput {
+        width: 70px;
+        height: 100%;
+        border: 0;
+        outline: 0;
+        text-align: center;
+        font-size: 17px;
+        font-weight: 700;
+        background: transparent;
+    }
+
+    .add-cart-btn {
+        width: 100%;
+        border-radius: 50px;
+        padding: 15px;
+        font-weight: 700;
+        box-shadow: 0 8px 20px rgba(13, 110, 253, .18);
+    }
+
+
+    /* =========================================
+       ADMIN
+    ========================================== */
+
+    .admin-action {
+        margin-top: 15px;
+    }
+
+
+    /* =========================================
+       TRUST GRID
+    ========================================== */
+
+    .trust-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        border-top: 1px solid #e5e7eb;
+        margin-top: 30px;
+        padding-top: 25px;
+    }
+
+    .trust-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .trust-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #eff6ff;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .trust-item strong,
+    .trust-item small {
+        display: block;
+    }
+
+    .trust-item strong {
+        font-size: 13px;
+    }
+
+    .trust-item small {
+        color: #64748b;
+        font-size: 11px;
+    }
+
+
+    /* =========================================
+       RELATED PRODUCTS
+    ========================================== */
+
+    .related-section {
+        margin-top: 70px;
+    }
+
+    .section-heading {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        margin-bottom: 25px;
+    }
+
+    .section-kicker {
+        color: #2563eb;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+    }
+
+    .section-heading h2 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin: 5px 0 0;
+        color: #172033;
+    }
+
+    .related-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+        transition: all .25s ease;
+    }
+
+    .related-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(0,0,0,.10);
+    }
+
+    .related-image {
+        height: 230px;
+        background: #f8fafc;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+    }
+
+    .related-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .related-no-image {
+        color: #94a3b8;
+        font-size: 35px;
+    }
+
+    .related-stock {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        padding: 5px 9px;
+        border-radius: 50px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .related-stock.out {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .related-stock.low {
+        background: #fef3c7;
+        color: #b45309;
+    }
+
+    .related-body {
+        padding: 18px;
+    }
+
+    .related-title {
+        font-size: 17px;
+        font-weight: 700;
+        margin: 5px 0;
+        color: #172033;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        min-height: 44px;
+    }
+
+    .related-brand {
+        color: #64748b;
+        font-size: 13px;
+        margin-bottom: 15px;
+    }
+
+    .related-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .related-price {
+        font-size: 18px;
+        font-weight: 800;
+        color: #2563eb;
+    }
+
+
+    /* =========================================
+       MOBILE
+    ========================================== */
+
+    @@media (max-width: 991px) {
+
+        .product-gallery {
+            min-height: 450px;
+            padding: 25px;
+        }
+
+        .image-wrapper,
+        .no-image {
+            height: 400px;
+        }
+
+        .product-info {
+            padding: 30px;
+        }
+    }
+
+
+    @@media (max-width: 576px) {
+
+        .product-gallery {
+            min-height: 360px;
+            padding: 15px;
+        }
+
+        .image-wrapper,
+        .no-image {
+            height: 330px;
+        }
+
+        .product-info {
+            padding: 22px;
+        }
+
+        .product-title {
+            font-size: 2rem;
+        }
+
+        .price {
+            font-size: 1.9rem;
+        }
+
+        .trust-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .section-heading {
+            align-items: start;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .specification-name {
+            width: 42%;
+        }
+
+        .specification-name,
+        .specification-value {
+            padding: 12px 10px;
+            font-size: 14px;
+        }
+
+    }
+
+</style>
+
+
+@section Scripts {
+
+    <script>
+
+        const stockLimit = @Model.StockQuantity;
+
+        function changeQty(amount) {
+
+            const input =
+                document.getElementById("qtyInput");
+
+            if (!input) {
+                return;
+            }
+
+            let current =
+                parseInt(input.value) || 1;
+
+            let next =
+                current + amount;
+
+            if (next < 1) {
+                next = 1;
+            }
+
+            if (next > stockLimit) {
+                next = stockLimit;
+            }
+
+            input.value = next;
+        }
+
+    </script>
+
+}

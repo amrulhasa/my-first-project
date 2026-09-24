@@ -1,0 +1,68 @@
+@{
+    ViewData["Title"] = "Access Denied";
+}
+
+<div class="container mt-5 mb-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-7">
+
+            <div class="card border-0 shadow-lg rounded-4">
+
+                <div class="card-body text-center p-5">
+
+                    <i class="fas fa-ban fa-5x text-danger mb-4"></i>
+
+                    <h2 class="fw-bold">
+                        Access Denied
+                    </h2>
+
+                    <p class="text-muted mt-3">
+                        You don't have permission to access this page.
+                    </p>
+
+                    <div class="mt-4">
+
+                        <a asp-controller="Home"
+                           asp-action="Index"
+                           class="btn btn-primary px-4 me-2">
+                            Go Home
+                        </a>
+
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <form asp-controller="Account"
+                                  asp-action="Logout"
+                                  method="post"
+                                  class="d-inline">
+
+                                @Html.AntiForgeryToken()
+
+                                <button type="submit"
+                                        class="btn btn-outline-secondary px-4">
+                                    Sign Out
+                                </button>
+
+                            </form>
+                        }
+                        else
+                        {
+                            <a asp-controller="Account"
+                               asp-action="Login"
+                               class="btn btn-outline-primary px-4">
+                                Sign In
+                            </a>
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
