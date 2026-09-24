@@ -1,0 +1,104 @@
+@model BDTechMarket.Models.Product
+
+@{
+    ViewData["Title"] = "Inventory | Add Product";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+                <div class="card-header bg-dark text-white p-4 border-0">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-warning text-dark rounded-3 p-2 me-3">
+                            <i class="fas fa-box-open fa-lg"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-0 fw-bold">Add Tech Gadget</h4>
+                            <p class="mb-0 small text-light opacity-75">Populate your inventory with the latest gear</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="Create" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 small py-2"></div>
+
+                        <div class="row g-4">
+                            @* --- Product Details --- *@
+                            <div class="col-md-7">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Name" class="form-label small fw-bold text-uppercase text-muted"></label>
+                                    <input asp-for="Name" class="form-control form-control-lg rounded-3 shadow-none border-2" placeholder="e.g. RTX 4090 GPU" />
+                                    <span asp-validation-for="Name" class="text-danger x-small"></span>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Price" class="form-label small fw-bold text-uppercase text-muted"></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white border-2 border-end-0">৳</span>
+                                            <input asp-for="Price" class="form-control form-control-lg border-2 border-start-0 shadow-none" placeholder="0" />
+                                        </div>
+                                        <span asp-validation-for="Price" class="text-danger x-small"></span>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="CategoryId" class="form-label small fw-bold text-uppercase text-muted">Category</label>
+                                        <select asp-for="CategoryId" class="form-select form-select-lg border-2 shadow-none" asp-items="ViewBag.CategoryId">
+                                            <option value="">Select...</option>
+                                        </select>
+                                        <span asp-validation-for="CategoryId" class="text-danger x-small"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group mb-0">
+                                    <label asp-for="Description" class="form-label small fw-bold text-uppercase text-muted">Specifications</label>
+                                    <textarea asp-for="Description" class="form-control border-2 shadow-none" rows="4" placeholder="Mention key features, warranty, etc."></textarea>
+                                </div>
+                            </div>
+
+                            @* --- Image Upload Zone --- *@
+                            <div class="col-md-5">
+                                <label class="form-label small fw-bold text-uppercase text-muted">Product Visual</label>
+                                <div class="upload-zone rounded-4 d-flex flex-column align-items-center justify-content-center text-center p-4 border-2 border-dashed border-muted bg-light position-relative h-100">
+                                    <input asp-for="ImageFile" type="file" id="imageInput" class="opacity-0 position-absolute w-100 h-100 cursor-pointer" accept="image/*" />
+                                    
+                                    <div id="uploadPlaceholder" class="py-4">
+                                        <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                        <p class="small text-muted px-2">Drag & drop product image or <strong>click to browse</strong></p>
+                                    </div>
+                                    
+                                    <img id="preview" src="#" alt="Preview" class="img-fluid rounded-3 d-none shadow-sm" style="max-height: 200px;" />
+                                    
+                                    <button type="button" id="removeImg" class="btn btn-sm btn-danger rounded-pill position-absolute top-0 end-0 m-2 d-none">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-5 opacity-10">
+
+                        <div class="d-flex flex-column flex-md-row gap-3">
+                            <button type="submit" class="btn btn-primary btn-lg px-5 rounded-pill fw-bold shadow-sm flex-grow-1">
+                                <i class="fas fa-plus me-2"></i>Publish Product
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-dark btn-lg px-4 rounded-pill">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .upload-zone { transition: all 0.3s ease; min-height: 280px; }
+    .upload-zone:hover { border-color: #0d6efd !important; background-color: #f8f9ff !important; }
+    .x-small { font-size: 0.75rem; }
+    .cursor-pointer { cursor: pointer; z-index: 5; }
+    textarea { resize: none; }
+    .border-2 { border-width: 2px !important; }
+</style>

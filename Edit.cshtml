@@ -1,0 +1,114 @@
+@model BDTechMarket.Models.Product
+@{
+    ViewData["Title"] = "Update Inventory";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-8">
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                <div class="card-header bg-dark text-white p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary rounded-3 p-2 me-3">
+                            <i class="fas fa-edit fa-lg"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-0 fw-bold">Update Product Details</h4>
+                            <p class="mb-0 small text-light opacity-50">Modify @Model.Name in the global catalog</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 small py-2 mb-4"></div>
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="ImageUrl" />
+
+                        <div class="row g-4">
+                            @* --- Text Information --- *@
+                            <div class="col-md-7">
+                                <div class="mb-3">
+                                    <label asp-for="Name" class="form-label small fw-bold text-muted text-uppercase">Product Name</label>
+                                    <input asp-for="Name" class="form-control form-control-lg border-2 shadow-none" placeholder="Enter product name" />
+                                    <span asp-validation-for="Name" class="text-danger x-small"></span>
+                                </div>
+
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <label asp-for="Price" class="form-label small fw-bold text-muted text-uppercase">Price (BDT)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light border-2 border-end-0">৳</span>
+                                            <input asp-for="Price" class="form-control form-control-lg border-2 border-start-0 shadow-none" />
+                                        </div>
+                                        <span asp-validation-for="Price" class="text-danger x-small"></span>
+                                    </div>
+                                    <div class="col-6">
+                                        <label asp-for="CategoryId" class="form-label small fw-bold text-muted text-uppercase">Category</label>
+                                        <select asp-for="CategoryId" class="form-select form-select-lg border-2 shadow-none" asp-items="ViewBag.CategoryId"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @* --- Image Management --- *@
+                            <div class="col-md-5">
+                                <div class="p-3 border-2 border-dashed rounded-4 bg-light text-center">
+                                    <label class="form-label small fw-bold text-muted text-uppercase d-block mb-3">Product Media</label>
+                                    
+                                    <div class="position-relative mb-3 d-inline-block">
+                                        <img id="imgPreview" src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/no-image.png" : Model.ImageUrl)" 
+                                             class="img-thumbnail rounded-3 shadow-sm" style="max-height: 180px; width: 100%; object-fit: contain;" />
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary shadow">Current</span>
+                                    </div>
+
+                                    <div class="mt-2">
+                                        <label for="imageInput" class="btn btn-sm btn-outline-dark rounded-pill px-3">
+                                            <i class="fas fa-camera me-1"></i> Replace Photo
+                                        </label>
+                                        <input asp-for="ImageFile" type="file" id="imageInput" class="d-none" accept="image/*" />
+                                    </div>
+                                    <p class="x-small text-muted mt-2 mb-0">Recommended: 800x800px (JPG/PNG)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 pt-4 border-top">
+                            <div class="d-flex flex-column flex-md-row gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg px-5 rounded-pill fw-bold shadow flex-grow-1">
+                                    <i class="fas fa-cloud-upload-alt me-2"></i> Save Changes
+                                </button>
+                                <a asp-action="Index" class="btn btn-outline-secondary btn-lg px-4 rounded-pill">
+                                    Discard
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body { background-color: #f0f2f5; }
+    .border-2 { border-width: 2px !important; }
+    .x-small { font-size: 0.75rem; }
+    .form-control:focus, .form-select:focus { border-color: #0d6efd; }
+    footer { display: none !important; }
+</style>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const preview = document.getElementById('imgPreview');
+            const [file] = e.target.files;
+            if (file) {
+                preview.src = URL.createObjectURL(file);
+                // Visual feedback that the image is changed
+                preview.closest('.position-relative').querySelector('.badge').innerText = "New Selection";
+                preview.closest('.position-relative').querySelector('.badge').className = "position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success shadow";
+            }
+        });
+    </script>
+}

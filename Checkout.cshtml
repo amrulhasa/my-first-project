@@ -1,0 +1,98 @@
+@model BDTechMarket.Models.Order
+
+<div class="container my-5">
+    <form asp-action="PlaceOrder" method="post" id="paymentForm">
+        @* Hidden fields for necessary data *@
+        <input type="hidden" asp-for="UserId" />
+        
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h5 class="mb-0"><i class="fas fa-truck me-2"></i> Shipping & Contact Information</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Recipient Full Name</label>
+                                <input asp-for="FullName" class="form-control form-control-lg bg-light" placeholder="e.g. Sakib Ahmed" required />
+                                <span asp-validation-for="FullName" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Phone Number</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">+88</span>
+                                    <input asp-for="Phone" class="form-control form-control-lg bg-light" placeholder="017XXXXXXXX" required />
+                                </div>
+                                <span asp-validation-for="Phone" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Email Address</label>
+                                @* মডেলে Email যোগ করায় এটি এখন কাজ করবে *@
+                                <input asp-for="Email" class="form-control form-control-lg bg-light" placeholder="email@example.com" />
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Detailed Delivery Address</label>
+                                <textarea asp-for="Address" class="form-control bg-light" rows="3" placeholder="House no, Street name, Area..." required></textarea>
+                                <span asp-validation-for="Address" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @* Payment Section *@
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold mb-3 text-uppercase">Select Payment Method</h6>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <input type="radio" asp-for="PaymentMethod" class="btn-check" id="bkash" value="bKash" checked>
+                                <label class="btn btn-outline-danger w-100 p-3" for="bkash">
+                                    <i class="fas fa-mobile-alt d-block mb-2"></i> bKash
+                                </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="radio" asp-for="PaymentMethod" class="btn-check" id="nagad" value="Nagad">
+                                <label class="btn btn-outline-warning w-100 p-3" for="nagad">
+                                    <i class="fas fa-wallet d-block mb-2"></i> Nagad
+                                </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="radio" asp-for="PaymentMethod" class="btn-check" id="cod" value="COD">
+                                <label class="btn btn-outline-secondary w-100 p-3" for="cod">
+                                    <i class="fas fa-hand-holding-usd d-block mb-2"></i> Cash on Delivery
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow border-0 sticky-top" style="top: 20px;">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4">Order Summary</h5>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal</span>
+                            <span class="fw-bold">৳ @ViewBag.Subtotal</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Delivery Fee</span>
+                            <span class="text-success fw-bold">৳ @ViewBag.DeliveryFee</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-4">
+                            <span class="h5 fw-bold">Grand Total</span>
+                            <span class="h5 fw-bold text-primary">৳ @ViewBag.Total</span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill shadow">
+                            CONFIRM ORDER <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

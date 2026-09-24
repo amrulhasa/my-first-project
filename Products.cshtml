@@ -1,0 +1,89 @@
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model IEnumerable<BDTechMarket.Models.Product>
+
+@{
+    ViewData["Title"] = "Our Products - BDTechMarket";
+}
+
+<div class="container mt-4">
+    <div class="row align-items-center mb-4">
+        <div class="col-md-6">
+            <h2 class="fw-bold"><i class="fas fa-microchip me-2"></i>Available Tech Gadgets</h2>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-5 bg-light">
+        <div class="card-body">
+            <form asp-action="Products" method="get" class="row g-3">
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
+                        <input type="text" name="searchTerm" class="form-control border-start-0" placeholder="Search by product name..." />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <select name="categoryId" class="form-select shadow-none">
+                        <option value="">All Categories</option>
+                        @if (ViewBag.CategoryList != null)
+                        {
+                            @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.CategoryList)
+                            {
+                                @* FIX: Changed @item.Name to @item.Text *@
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">
+                        Apply Filters
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+            @foreach (var product in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm transition-card">
+                        <div class="position-relative">
+                            <img src="@(string.IsNullOrEmpty(product.ImageUrl) ? "/images/no-image.png" : product.ImageUrl)" 
+                                 class="card-img-top p-3" alt="@product.Name" 
+                                 style="height: 200px; object-fit: contain;">
+                            <span class="position-absolute top-0 end-0 badge bg-info m-2">@product.Category?.Name</span>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-title fw-bold">@product.Name</h6>
+                            <h5 class="text-primary fw-bold">@product.Price.ToString("N0") <small>BDT</small></h5>
+                        </div>
+                        <div class="card-footer bg-white border-top-0 pb-3">
+                            <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                <input type="hidden" name="productId" value="@product.Id" />
+                                <button type="submit" class="btn btn-dark btn-sm w-100 rounded-pill">
+                                    <i class="fas fa-cart-plus me-1"></i> Add to Cart
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+            <h4>No products found matching your criteria.</h4>
+            <a asp-action="Products" class="btn btn-link">View All Products</a>
+        </div>
+    }
+</div>
+
+<style>
+    .transition-card { transition: transform 0.3s; }
+    .transition-card:hover { transform: translateY(-5px); }
+</style>

@@ -1,0 +1,143 @@
+@model BDTechMarket.Models.Product
+
+@{
+    ViewData["Title"] = Model.Name + " | BDTechMarket";
+}
+
+<div class="container py-5">
+    @* --- Breadcrumb for SEO & Navigation --- *@
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-decoration-none text-muted">Store</a></li>
+            <li class="breadcrumb-item"><a href="#" class="text-decoration-none text-muted">@Model.Category?.Name</a></li>
+            <li class="breadcrumb-item active fw-bold text-dark">@Model.Name</li>
+        </ol>
+    </nav>
+
+    <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+        <div class="row g-0">
+            @* --- Left Side: Premium Image Gallery --- *@
+            <div class="col-lg-6 bg-white d-flex align-items-center justify-content-center p-4 p-md-5 border-end">
+                <div class="product-image-container animate__animated animate__fadeIn">
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <img src="@Url.Content(Model.ImageUrl)" id="mainProductImage" class="img-fluid rounded zoom-effect" alt="@Model.Name" />
+                    }
+                    else
+                    {
+                        <div class="p-5 bg-light rounded text-center border w-100">
+                            <i class="fas fa-image fa-4x text-muted mb-3"></i>
+                            <h5 class="text-muted">Image Coming Soon</h5>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @* --- Right Side: Purchasing Section --- *@
+            <div class="col-lg-6 p-4 p-md-5 bg-white">
+                <div class="mb-2">
+                    <span class="badge bg-soft-primary text-primary px-3 py-2 rounded-pill small fw-bold">
+                        <i class="fas fa-tag me-1"></i> @Model.Category?.Name
+                    </span>
+                    <span class="ms-2 text-success small fw-bold"><i class="fas fa-check-circle me-1"></i> In Stock</span>
+                </div>
+
+                <h1 class="fw-bold text-dark mb-3 display-6">@Model.Name</h1>
+                
+                <div class="d-flex align-items-center mb-4">
+                    <div class="text-warning me-2">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <span class="text-muted small">(4.5/5 Rating based on 12 reviews)</span>
+                </div>
+
+                <div class="price-card p-4 rounded-4 mb-4">
+                    <div class="d-flex align-items-baseline">
+                        <h2 class="text-primary fw-bold mb-0">৳ @Model.Price.ToString("N0")</h2>
+                        <span class="ms-2 text-muted text-decoration-line-through small">৳ @((Model.Price * 1.1m).ToString("N0"))</span>
+                    </div>
+                    <p class="text-muted x-small mb-0 mt-2">Cash Price. EMI starts from ৳ 2,400/month.</p>
+                </div>
+
+                @* --- Quantity & Add to Cart --- *@
+                <form asp-controller="Cart" asp-action="AddToCart" method="post" class="mt-4">
+                    <input type="hidden" name="productId" value="@Model.Id" />
+                    
+                    <div class="row g-3 align-items-center mb-4">
+                        <div class="col-auto">
+                            <label class="small fw-bold text-muted text-uppercase d-block mb-2">Quantity</label>
+                            <div class="input-group quantity-selector rounded-pill">
+                                <button class="btn btn-outline-secondary border-0" type="button" onclick="changeQty(-1)">-</button>
+                                <input type="number" name="quantity" id="qtyInput" class="form-control border-0 text-center fw-bold bg-transparent" value="1" min="1" readonly>
+                                <button class="btn btn-outline-secondary border-0" type="button" onclick="changeQty(1)">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-sm-flex">
+                        <button type="submit" class="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow flex-grow-1 fw-bold transition-hover">
+                            <i class="fas fa-cart-plus me-2"></i> Add to Cart
+                        </button>
+                        <button type="button" class="btn btn-outline-danger btn-lg px-4 rounded-pill transition-hover">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                </form>
+
+                @* --- Value Props --- *@
+                <div class="row g-3 mt-5 pt-4 border-top">
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-truck text-primary fs-4 me-3"></i>
+                            <div>
+                                <h6 class="mb-0 small fw-bold">Fast Delivery</h6>
+                                <p class="mb-0 x-small text-muted">Within 24-48 Hours</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-shield-alt text-primary fs-4 me-3"></i>
+                            <div>
+                                <h6 class="mb-0 small fw-bold">Official Warranty</h6>
+                                <p class="mb-0 x-small text-muted">12 Months Support</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body { background-color: #f8f9fa; }
+    .bg-soft-primary { background-color: #e7f0ff; }
+    .price-card { background: #f1f3f5; border-left: 5px solid #0d6efd; }
+    .quantity-selector { width: 130px; border: 2px solid #dee2e6; overflow: hidden; }
+    .quantity-selector input::-webkit-outer-spin-button, 
+    .quantity-selector input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    
+    .zoom-effect { transition: transform 0.5s ease; cursor: crosshair; }
+    .zoom-effect:hover { transform: scale(1.05); }
+    
+    .x-small { font-size: 0.75rem; }
+    .transition-hover { transition: all 0.3s ease; }
+    .transition-hover:hover { transform: translateY(-3px); }
+</style>
+
+@section Scripts {
+    <script>
+        function changeQty(amount) {
+            const input = document.getElementById('qtyInput');
+            let currentVal = parseInt(input.value);
+            if (currentVal + amount >= 1) {
+                input.value = currentVal + amount;
+            }
+        }
+    </script>
+}
