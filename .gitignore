@@ -84,3 +84,5 @@ index 4e0603a..c0913e1 100644
 +## Frontend tooling (not currently used, kept as a safeguard)
 +## =========================
 +node_modules/
+bin/
+obj/
